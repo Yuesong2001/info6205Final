@@ -150,6 +150,24 @@ public class UserFriendView extends VBox {
         addFriendBtn.setOnAction(e -> {
             User selectedRec = recommendListView.getSelectionModel().getSelectedItem();
             if (selectedRec != null) {
+                // 检查是否已经是好友
+                List<User> existingFriends = userController.getFriendsOfUser(currentUser.getUserId());
+                boolean alreadyFriend = false;
+                
+                for (User friend : existingFriends) {
+                    if (friend.getUserId().equals(selectedRec.getUserId())) {
+                        alreadyFriend = true;
+                        break;
+                    }
+                }
+                
+                if (alreadyFriend) {
+                    // 用户已经是好友，显示错误提示
+                    showAlert(Alert.AlertType.ERROR, "Already Friends", 
+                              selectedRec.getUsername() + " is already your friend!");
+                    return;
+                }
+            	
                 // 保存被选中的索引
                 int selectedIndex = recommendListView.getSelectionModel().getSelectedIndex();
                 
@@ -164,7 +182,8 @@ public class UserFriendView extends VBox {
                     recommendListView.getSelectionModel().select(selectedIndex);
                 }
             } else {
-                showAlert("Please select a friend recommendation first.");
+                showAlert(Alert.AlertType.WARNING, "Selection Required", 
+                        "Please select a friend recommendation first.");
             }
         });
         
@@ -205,9 +224,9 @@ public class UserFriendView extends VBox {
         );
     }
     
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

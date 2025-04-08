@@ -1,9 +1,13 @@
 package view;
 
 
+import java.util.UUID;
+
 import controller.MainController;
 import controller.NavigationController;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -15,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import model.DataStore;
+import model.User;
 import javafx.geometry.HPos;
 
 
@@ -89,10 +94,38 @@ public class LoginView extends VBox {
         });
         
         Button registerBtn = new Button("Register");
-        registerBtn.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white;");
-        registerBtn.setMaxWidth(Double.MAX_VALUE);
+        registerBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+        registerBtn.setMaxWidth(Double.MAX_VALUE);  // Makes the button take up the full width of the container
         registerBtn.setOnAction(e -> {
-            navController.pushPane(new RegisterView(dataStore, navController));
+            String username = userField.getText().trim();
+            String password = passField.getText().trim();
+            
+            // 简化的判空检查
+            if (username.isEmpty() || password.isEmpty()) {
+                showErrorAlert("Input Error", "Username/Password cannot be empty");
+                return;
+            }
+            
+            // 检查是否已存在
+            if (dataStore.findUserByUsername(username) != null) {
+                // 显示错误弹窗
+                showErrorAlert("Username Error", "Username already taken, please choose another");
+                return;
+            }
+            
+            // 否则创建User，并放入userMap
+            String newUserId = UUID.randomUUID().toString();
+            User newUser = new User(newUserId, username, password);
+            dataStore.addUser(newUser); 
+            
+            messageLabel.setText("Registration successful!");
+            messageLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+            
+            // 显示成功提示
+            showSuccessAlert("Registration Successful", "Your account has been created successfully!");
+            
+            // 注册完成后，回到登录页面
+            navController.pushPane(new LoginView(new MainController(dataStore, navController), navController, dataStore));
         });
      // Add elements to grid
         grid.add(userLabel, 0, 0);
@@ -110,5 +143,21 @@ public class LoginView extends VBox {
 
         // Add all components to the VBox
         getChildren().addAll(titleLabel, grid);
+    }
+    
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    private void showSuccessAlert(String title, String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

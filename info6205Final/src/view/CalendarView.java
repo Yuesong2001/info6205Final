@@ -70,6 +70,7 @@ public class CalendarView extends VBox {
         
         this.dataStore = dataStore;
         this.navController = navController;
+        this.currentUser = currentUser;
         
 
         // 设置布局属性
@@ -104,17 +105,24 @@ public class CalendarView extends VBox {
 
         // 设置显示事件按钮的点击事件处理
         showEventsBtn.setOnAction(e -> {
-        	
-            if (eventListView.getItems().isEmpty()) {
+            LocalDate selectedDate = datePicker.getValue(); // 获取选中的日期
+            List<Event> events = dataStore.getUserEventsByDay(user.getUserId(), selectedDate); // 获取该日期的事件列表
+            
+            // 先检查获取到的事件列表是否为空
+            if (events.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("No Events");
                 alert.setHeaderText(null);
                 alert.setContentText("You have no events on this date!");
                 alert.showAndWait();
+                
+                // 重置选中状态和列表
+                selectedEvent[0] = null;
+                selectedEventLabel.setText("No event selected");
+                eventListView.getItems().clear();
+                eventListView.setUserData(null);
+                return; // 如果没有事件，直接返回，不执行后面的代码
             }
-        	
-            LocalDate selectedDate = datePicker.getValue(); // 获取选中的日期
-            List<Event> events = dataStore.getUserEventsByDay(user.getUserId(), selectedDate); // 获取该日期的事件列表
             
             // 重置选中状态
             selectedEvent[0] = null;
@@ -130,21 +138,6 @@ public class CalendarView extends VBox {
             }
             System.out.println("----------------------------");
 
-            // 清空并更新列表视图，显示详细的事件信息
-            eventListView.getItems().clear();
-            for (Event event : events) {
-                String participants = String.join(", ", event.getParticipants()); // 将参与者列表转换为逗号分隔的字符串
-                String displayText = String.format("%s\nTime: %s - %s\nPriority: %s\nParticipants: %s", 
-                    event.getTitle(),
-                    event.getStartTime().toLocalTime(),
-                    event.getEndTime().toLocalTime(),
-                    event.getPriority(),
-                    participants);
-                eventListView.getItems().add(displayText); // 添加格式化的事件信息到列表中
-            }
-            
-            // 存储原始事件列表以供后续引用
-            eventListView.setUserData(events);
             // 清空并更新列表视图，显示详细的事件信息
             eventListView.getItems().clear();
             for (Event event : events) {
