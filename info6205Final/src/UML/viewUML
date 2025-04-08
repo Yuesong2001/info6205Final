@@ -1,0 +1,99 @@
+@startuml View
+
+' ===== VIEW PACKAGE =====
+package view {
+    class CalendarView {
+        - currentUser: User
+        - dataStore: DataStore
+        - navController: NavigationController
+        - mainController: MainController
+        + CalendarView(user: User, dataStore: DataStore, navController: NavigationController, currentUser: User)
+        - showAlert(title: String, message: String): void
+        - showConfirmation(title: String, message: String): boolean
+    }
+
+    class EventFormView {
+        + EventFormView(user: User, dataStore: DataStore, navController: NavigationController)
+        + EventFormView(user: User, dataStore: DataStore, navController: NavigationController, initialDate: LocalDate)
+        - createHourComboBox(): ComboBox<String>
+        - createMinuteComboBox(): ComboBox<String>
+    }
+
+    class LoginView {
+        - mainController: MainController
+        - navController: NavigationController
+        - dataStore: DataStore
+        + LoginView(mainController: MainController, navController: NavigationController, dataStore: DataStore)
+    }
+
+    class RegisterView {
+        + RegisterView(dataStore: DataStore, navController: NavigationController)
+    }
+
+    class UserFriendView {
+        - userController: UserController
+        - navController: NavigationController
+        - currentUser: User
+        - mainController: MainController
+        - friendListView: ListView<User>
+        - recommendListView: ListView<User>
+        + UserFriendView(userController: UserController, navController: NavigationController, currentUser: User, mainController: MainController)
+        - createFriendListSection(): VBox
+        - createRecommendationSection(): VBox
+        - createButtonBar(): HBox
+        - styleButton(button: Button, baseColor: String, hoverColor: String): void
+        - showAlert(message: String): void
+        - refreshLists(): void
+    }
+}
+
+package controller {
+    class MainController
+    class NavigationController
+    class UserController
+}
+
+package model {
+    class DataStore
+    class User
+    class Event
+}
+
+class VBox
+class ListView<T>
+class Button
+class ComboBox<T>
+class LocalDate
+
+' View relationships
+CalendarView --> DataStore
+CalendarView --> NavigationController
+CalendarView --> User
+CalendarView --> MainController
+CalendarView ..> EventFormView
+CalendarView ..> UserFriendView
+EventFormView --> DataStore
+EventFormView --> NavigationController
+EventFormView --> User
+EventFormView --> Event
+LoginView --> MainController
+LoginView --> NavigationController
+LoginView --> DataStore
+LoginView ..> CalendarView
+RegisterView --> DataStore
+RegisterView --> NavigationController
+RegisterView ..> LoginView
+UserFriendView --> UserController
+UserFriendView --> NavigationController
+UserFriendView --> User
+UserFriendView --> MainController
+UserFriendView --> ListView
+
+' View extends relationships
+CalendarView --|> VBox
+EventFormView --|> VBox
+LoginView --|> VBox
+RegisterView --|> VBox
+UserFriendView --|> VBox
+
+@enduml

@@ -1,0 +1,114 @@
+package view;
+
+
+import controller.MainController;
+import controller.NavigationController;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import model.DataStore;
+import javafx.geometry.HPos;
+
+
+public class LoginView extends VBox {
+	
+    private MainController mainController;
+    private NavigationController navController;
+    private DataStore dataStore; // 存起来
+
+    public LoginView(MainController mainController, NavigationController navController, DataStore dataStore) {
+    	
+        this.mainController = mainController;
+        this.navController = navController;
+        this.dataStore = dataStore;
+    	
+        setSpacing(10);
+        setAlignment(Pos.CENTER);
+        
+        //background color
+        setStyle("-fx-background-color: #f4f4f9; -fx-padding: 20px;");
+
+        Label titleLabel = new Label("Login");
+        titleLabel.setFont(new Font("Arial", 24));
+        titleLabel.setTextFill(Color.DODGERBLUE);
+        
+     // Create a grid for form fields
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setAlignment(Pos.CENTER);
+
+
+        Label userLabel = new Label("Username:");
+        TextField userField = new TextField();
+        userField.setPromptText("Enter your username");
+
+        Label passLabel = new Label("Password:");
+        PasswordField passField = new PasswordField();
+        passField.setPromptText("Enter your password");
+
+        Label messageLabel = new Label();
+        messageLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;"); // Makes messageLabel clearly visible
+
+        
+        Button loginBtn = new Button("Login");
+        loginBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+        loginBtn.setMaxWidth(Double.MAX_VALUE);
+
+
+        loginBtn.setOnAction(e -> {
+            String username = userField.getText();
+            String password = passField.getText();
+            if (username.isEmpty() || password.isEmpty()) {
+                messageLabel.setText("Username/Password cannot be empty!");
+                return;
+            }
+            boolean success = mainController.login(username, password);
+            if(!success) {
+                messageLabel.setText("Login failed! Invalid credentials.");
+                messageLabel.setStyle("-fx-text-fill: red;");
+            } else {
+                // 简化处理
+                messageLabel.setText("Login successful!");
+                messageLabel.setStyle("-fx-text-fill: green;");
+                
+                PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+                pause.setOnFinished(event -> {
+                    navController.pushPane(new CalendarView(mainController.getCurrentUser(), dataStore, navController,mainController.getCurrentUser()));
+                });
+                pause.play();
+            }
+        });
+        
+        Button registerBtn = new Button("Register");
+        registerBtn.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white;");
+        registerBtn.setMaxWidth(Double.MAX_VALUE);
+        registerBtn.setOnAction(e -> {
+            navController.pushPane(new RegisterView(dataStore, navController));
+        });
+     // Add elements to grid
+        grid.add(userLabel, 0, 0);
+        grid.add(userField, 1, 0);
+        grid.add(passLabel, 0, 1);
+        grid.add(passField, 1, 1);
+        grid.add(loginBtn, 0, 2, 2, 1);
+        grid.add(messageLabel, 0, 3, 2, 1);
+        grid.add(registerBtn, 0, 4, 2, 1);
+        
+
+        // Center the buttons in the grid
+        GridPane.setHalignment(loginBtn, HPos.CENTER);
+        GridPane.setHalignment(registerBtn, HPos.CENTER);
+
+        // Add all components to the VBox
+        getChildren().addAll(titleLabel, grid);
+    }
+}

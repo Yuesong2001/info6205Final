@@ -1,0 +1,68 @@
+@startuml Controller
+
+' ===== CONTROLLER PACKAGE =====
+package controller {
+    class MainController {
+        - dataStore: DataStore
+        - navigationController: NavigationController
+        - currentUser: User
+        + MainController(dataStore: DataStore, navigationController: NavigationController)
+        + login(username: String, password: String): boolean
+        + logout(): void
+        + getCurrentUser(): User
+    }
+
+    class EventController {
+        - dataStore: DataStore
+        + EventController(dataStore: DataStore)
+        + createEvent(user: User, title: String, start: LocalDateTime, end: LocalDateTime, participants: String, priority: PriorityLevel): void
+        + searchEventsByTitle(title: String): void
+    }
+
+    class UserController {
+        - dataStore: DataStore
+        + UserController(dataStore: DataStore)
+        + getAllUsers(): List<User>
+        + getUserById(userId: String): User
+        + addFriendRelation(userId1: String, userId2: String): void
+        + getFriendsOfUser(userId: String): List<User>
+        + recommendFriends(userId: String): List<User>
+    }
+
+    class NavigationController {
+        - scene: Scene
+        - currentPane: Pane
+        - paneStack: Stack<Pane>
+        + NavigationController()
+        + setScene(scene: Scene): void
+        + pushPane(newPane: Pane): void
+        + popPane(): void
+    }
+}
+
+package model {
+    class DataStore
+    class User
+    class Event
+    enum PriorityLevel
+}
+
+class Scene
+class Pane
+class Stack<T>
+class LocalDateTime
+
+' Controller relationships
+MainController --> DataStore
+MainController --> NavigationController
+MainController --> User
+EventController --> DataStore
+EventController --> Event
+EventController --> PriorityLevel
+UserController --> DataStore
+UserController --> User
+NavigationController --> Scene
+NavigationController --> Pane
+NavigationController --> Stack
+
+@enduml

@@ -1,0 +1,89 @@
+@startuml Model
+
+' ===== MODEL PACKAGE =====
+package model {
+    class DataStore {
+        - userMap: Map<String, User>
+        - eventMap: Map<String, Event>
+        - userDailyEvents: Map<String, Map<LocalDate, PriorityQueue<Event>>>
+        - adjacencyList: Map<String, Set<String>>
+        - stack: Stack<Object>
+        + DataStore()
+        + addUser(user: User): void
+        + findUserByUsername(username: String): User
+        + getUserMap(): Map<String, User>
+        + addFriendRelation(userId1: String, userId2: String): void
+        + recommendFriends(userId: String): Set<String>
+        + getAdjacencyList(): Map<String, Set<String>>
+        + addEvent(userId: String, event: Event): void
+        + getEventById(eventId: String): Event
+        + searchEventsByTitle(title: String): List<Event>
+        + getUserEventsByDay(userId: String, day: LocalDate): List<Event>
+        + getEventMap(): Map<String, Event>
+        + pushToStack(item: Object): void
+        + popFromStack(): Object
+        + isStackEmpty(): boolean
+        + removeEvent(userId: String, eventId: String): boolean
+    }
+
+    class User {
+        - userId: String
+        - username: String
+        - password: String
+        + User(userId: String, username: String, password: String)
+        + getUserId(): String
+        + setUserId(userId: String): void
+        + getUsername(): String
+        + setUsername(username: String): void
+        + getPassword(): String
+        + setPassword(password: String): void
+        + toString(): String
+    }
+
+    class Event {
+        - eventId: String
+        - title: String
+        - startTime: LocalDateTime
+        - endTime: LocalDateTime
+        - participants: List<String>
+        - priority: PriorityLevel
+        + Event(eventId: String, title: String, startTime: LocalDateTime, endTime: LocalDateTime, participants: List<String>, priority: PriorityLevel)
+        + getEventId(): String
+        + setEventId(eventId: String): void
+        + getTitle(): String
+        + setTitle(title: String): void
+        + getStartTime(): LocalDateTime
+        + setStartTime(startTime: LocalDateTime): void
+        + getEndTime(): LocalDateTime
+        + setEndTime(endTime: LocalDateTime): void
+        + getParticipants(): List<String>
+        + setParticipants(participants: List<String>): void
+        + getPriority(): PriorityLevel
+        + setPriority(priority: PriorityLevel): void
+        + toString(): String
+    }
+
+    class EventPriorityComparator {
+        + compare(e1: Event, e2: Event): int
+    }
+
+    enum PriorityLevel {
+        LOW
+        MEDIUM
+        HIGH
+    }
+}
+
+class LocalDateTime
+class Stack<T>
+
+' Model relationships
+EventPriorityComparator --> Event
+Event --> PriorityLevel
+Event --> LocalDateTime
+DataStore --> User
+DataStore --> Event
+DataStore --> EventPriorityComparator
+DataStore --> Stack
+
+@enduml
