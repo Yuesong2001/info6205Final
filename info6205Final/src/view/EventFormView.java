@@ -427,49 +427,7 @@ public class EventFormView extends VBox {
         return true;
     }
     
-<<<<<<< HEAD
-=======
-    /**
-     * Check if time conflicts with existing events
-     * @param userId User ID
-     * @param date Event date
-     * @param startTime Start time
-     * @param endTime End time
-     * @return true if there is a conflict, false otherwise
-     */
->>>>>>> branch 'master' of https://github.com/Yuesong2001/info6205Final.git
-    private boolean checkTimeConflict(String userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        List<Event> existingEvents = dataStore.getUserEventsByDay(userId, date);
-        
-        LocalDateTime newStartDateTime = LocalDateTime.of(date, startTime);
-        LocalDateTime newEndDateTime = LocalDateTime.of(date, endTime);
-        
-        for (Event event : existingEvents) {
-            // Check if new event overlaps with existing events
-            LocalDateTime existingStart = event.getStartTime();
-            LocalDateTime existingEnd = event.getEndTime();
-            
-<<<<<<< HEAD
-            // 完整的重叠条件：
-            // 1. 如果新事件的开始时间小于等于现有事件的结束时间，且
-            // 2. 新事件的结束时间大于等于现有事件的开始时间
-            // 则两个事件重叠
-=======
-            // Overlap conditions: new event start time is within existing event time range
-            // or new event end time is within existing event time range
-            // or new event completely encompasses the existing event
->>>>>>> branch 'master' of https://github.com/Yuesong2001/info6205Final.git
-            boolean overlaps = 
-                (newStartDateTime.isBefore(existingEnd) || newStartDateTime.isEqual(existingEnd)) && 
-                (newEndDateTime.isAfter(existingStart) || newEndDateTime.isEqual(existingStart));
-            
-            if (overlaps) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
+
     
     /**
      * User list cell
@@ -522,6 +480,30 @@ public class EventFormView extends VBox {
             }
         }
         return minuteBox;
+    }
+    
+    private boolean checkTimeConflict(String userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        List<Event> existingEvents = dataStore.getUserEventsByDay(userId, date);
+        
+        LocalDateTime newStartDateTime = LocalDateTime.of(date, startTime);
+        LocalDateTime newEndDateTime = LocalDateTime.of(date, endTime);
+        
+        for (Event event : existingEvents) {
+            // check if new event is overlap with existing events
+            LocalDateTime existingStart = event.getStartTime();
+            LocalDateTime existingEnd = event.getEndTime();
+            
+
+            boolean overlaps = 
+                (newStartDateTime.isBefore(existingEnd) || newStartDateTime.isEqual(existingEnd)) && 
+                (newEndDateTime.isAfter(existingStart) || newEndDateTime.isEqual(existingStart));
+            
+            if (overlaps) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     /**
