@@ -6,48 +6,48 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 基于链表法的哈希映射实现
- * @param <K> 键的类型
- * @param <V> 值的类型
+ * Hash map implementation based on chaining method
+ * @param <K> Type of keys
+ * @param <V> Type of values
  */
 public class HashMap<K, V> implements MyMap<K, V> {
-    // 默认初始容量 - 必须是2的幂
+    // Default initial capacity - must be a power of 2
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
     
-    // 默认负载因子
+    // Default load factor
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
     
-    // 桶数组，每个桶是一个链表
+    // Bucket array, each bucket is a linked list
     private LinkedList<Entry<K, V>>[] table;
     
-    // 哈希映射中键值对的数量
+    // Number of key-value pairs in the hash map
     private int size;
     
-    // 负载因子
+    // Load factor
     private final float loadFactor;
     
-    // 扩容阈值 = 容量 * 负载因子
+    // Resize threshold = capacity * load factor
     private int threshold;
     
     /**
-     * 使用默认容量和负载因子构造哈希映射
+     * Constructs a hash map with default capacity and load factor
      */
     public HashMap() {
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
     
     /**
-     * 使用指定容量和默认负载因子构造哈希映射
-     * @param initialCapacity 初始容量
+     * Constructs a hash map with specified capacity and default load factor
+     * @param initialCapacity Initial capacity
      */
     public HashMap(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
     
     /**
-     * 使用指定容量和负载因子构造哈希映射
-     * @param initialCapacity 初始容量
-     * @param loadFactor 负载因子
+     * Constructs a hash map with specified capacity and load factor
+     * @param initialCapacity Initial capacity
+     * @param loadFactor Load factor
      */
     @SuppressWarnings("unchecked")
     public HashMap(int initialCapacity, float loadFactor) {
@@ -58,7 +58,7 @@ public class HashMap<K, V> implements MyMap<K, V> {
             throw new IllegalArgumentException("Illegal load factor: " + loadFactor);
         }
         
-        // 确保容量是2的幂
+        // Ensure capacity is a power of 2
         int capacity = 1;
         while (capacity < initialCapacity) {
             capacity <<= 1;
@@ -75,19 +75,19 @@ public class HashMap<K, V> implements MyMap<K, V> {
             throw new IllegalArgumentException("Key cannot be null");
         }
         
-        // 如果需要扩容
+        // Resize if necessary
         if (size >= threshold) {
             resize();
         }
         
         int index = getIndex(key);
         
-        // 如果桶为空，创建链表
+        // If bucket is empty, create a linked list
         if (table[index] == null) {
             table[index] = new LinkedList<>();
         }
         
-        // 检查是否键已存在
+        // Check if key already exists
         for (Entry<K, V> entry : table[index]) {
             if (entry.getKey().equals(key)) {
                 V oldValue = entry.getValue();
@@ -96,7 +96,7 @@ public class HashMap<K, V> implements MyMap<K, V> {
             }
         }
         
-        // 键不存在，添加新条目
+        // Key doesn't exist, add new entry
         table[index].add(new SimpleEntry<>(key, value));
         size++;
         return null;
@@ -114,7 +114,7 @@ public class HashMap<K, V> implements MyMap<K, V> {
             return null;
         }
         
-        // 在链表中查找键
+        // Find key in the linked list
         for (Entry<K, V> entry : table[index]) {
             if (entry.getKey().equals(key)) {
                 return entry.getValue();
@@ -136,7 +136,7 @@ public class HashMap<K, V> implements MyMap<K, V> {
             return null;
         }
         
-        // 在链表中查找并删除键
+        // Find and remove key in the linked list
         for (int i = 0; i < table[index].size(); i++) {
             Entry<K, V> entry = table[index].get(i);
             if (entry.getKey().equals(key)) {
@@ -161,7 +161,7 @@ public class HashMap<K, V> implements MyMap<K, V> {
             return false;
         }
         
-        // 在链表中查找键
+        // Find key in the linked list
         for (Entry<K, V> entry : table[index]) {
             if (entry.getKey().equals(key)) {
                 return true;
@@ -220,24 +220,24 @@ public class HashMap<K, V> implements MyMap<K, V> {
     }
     
     /**
-     * 获取键的哈希索引
-     * @param key 键
-     * @return 索引
+     * Get hash index for the key
+     * @param key Key
+     * @return Index
      */
     private int getIndex(K key) {
-        // 使用 & 操作代替 % 操作，因为表长度是2的幂
+        // Use & operation instead of % operation, since table length is a power of 2
         return (key.hashCode() & 0x7FFFFFFF) % table.length;
     }
     
     /**
-     * 扩容哈希表
+     * Resize the hash table
      */
     @SuppressWarnings("unchecked")
     private void resize() {
         int newCapacity = table.length * 2;
         LinkedList<Entry<K, V>>[] newTable = new LinkedList[newCapacity];
         
-        // 重新计算每个条目的位置
+        // Recalculate position for each entry
         for (LinkedList<Entry<K, V>> bucket : table) {
             if (bucket != null) {
                 for (Entry<K, V> entry : bucket) {
@@ -262,18 +262,18 @@ public class HashMap<K, V> implements MyMap<K, V> {
             throw new IllegalArgumentException("Key cannot be null");
         }
         
-        // 如果键已存在，返回现有值
+        // If key already exists, return existing value
         if (containsKey(key)) {
             return get(key);
         }
         
-        // 如果键不存在，添加新键值对并返回null
+        // If key doesn't exist, add new key-value pair and return null
         put(key, value);
         return null;
     }
     
     /**
-     * 哈希映射条目的简单实现
+     * Simple implementation of hash map entry
      */
     private static class SimpleEntry<K, V> implements Entry<K, V> {
         private final K key;
@@ -318,8 +318,6 @@ public class HashMap<K, V> implements MyMap<K, V> {
             result = 31 * result + (value != null ? value.hashCode() : 0);
             return result;
         }
-        
-        
         
         @Override
         public String toString() {

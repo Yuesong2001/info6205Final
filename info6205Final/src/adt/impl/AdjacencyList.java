@@ -1,25 +1,23 @@
-// Graph接口保持不变
-
-// AdjacencyList实现
+// AdjacencyList implementation
 package adt.impl;
 
 import adt.MyGraph;
 import java.util.*;
 
 /**
- * 基于邻接表的图实现
- * 使用简单数组和列表避免内置HashMap和HashSet
- * @param <V> 顶点的类型
+ * Graph implementation based on adjacency list
+ * Using simple arrays and lists to avoid built-in HashMap and HashSet
+ * @param <V> Type of vertices
  */
 public class AdjacencyList<V> implements MyGraph<V> {
-    // 用于存储顶点
+    // For storing vertices
     private final List<V> vertices;
-    // 用于存储每个顶点的邻居
+    // For storing neighbors of each vertex
     private final List<List<V>> adjacencyLists;
     private int edgeCount;
     
     /**
-     * 创建一个空图
+     * Creates an empty graph
      */
     public AdjacencyList() {
         this.vertices = new ArrayList<>();
@@ -28,9 +26,9 @@ public class AdjacencyList<V> implements MyGraph<V> {
     }
     
     /**
-     * 查找顶点索引
-     * @param vertex 要查找的顶点
-     * @return 顶点索引，如果不存在则返回-1
+     * Find the index of a vertex
+     * @param vertex The vertex to find
+     * @return The index of the vertex, or -1 if it doesn't exist
      */
     private int indexOf(V vertex) {
         for (int i = 0; i < vertices.size(); i++) {
@@ -62,7 +60,7 @@ public class AdjacencyList<V> implements MyGraph<V> {
             throw new IllegalArgumentException("Vertices cannot be null");
         }
         
-        // 如果顶点不存在，则添加
+        // Add vertices if they don't exist
         if (!containsVertex(source)) {
             addVertex(source);
         }
@@ -71,12 +69,12 @@ public class AdjacencyList<V> implements MyGraph<V> {
             addVertex(destination);
         }
         
-        // 检查边是否已存在
+        // Check if the edge already exists
         if (containsEdge(source, destination)) {
             return false;
         }
         
-        // 添加边
+        // Add the edge
         int sourceIndex = indexOf(source);
         List<V> neighbors = adjacencyLists.get(sourceIndex);
         neighbors.add(destination);
@@ -124,22 +122,22 @@ public class AdjacencyList<V> implements MyGraph<V> {
             return false;
         }
         
-        // 删除以该顶点为终点的所有边
+        // Remove all edges where this vertex is the destination
         for (int i = 0; i < adjacencyLists.size(); i++) {
             List<V> neighbors = adjacencyLists.get(i);
             for (int j = 0; j < neighbors.size(); j++) {
                 if (Objects.equals(neighbors.get(j), vertex)) {
                     neighbors.remove(j);
                     edgeCount--;
-                    j--; // 调整索引
+                    j--; // Adjust index
                 }
             }
         }
         
-        // 删除以该顶点为起点的所有边
+        // Remove all edges where this vertex is the source
         edgeCount -= adjacencyLists.get(vertexIndex).size();
         
-        // 删除顶点
+        // Remove the vertex
         vertices.remove(vertexIndex);
         adjacencyLists.remove(vertexIndex);
         return true;
@@ -169,8 +167,8 @@ public class AdjacencyList<V> implements MyGraph<V> {
     
     @Override
     public Set<V> getVertices() {
-        // 创建一个不依赖java.util.HashSet的Set实现
-        // 这里使用简单数组包装实现Set接口
+        // Create a Set implementation that doesn't depend on java.util.HashSet
+        // Here we use a simple array wrapper implementing the Set interface
         return new SimpleSet<>(vertices);
     }
     
@@ -185,7 +183,7 @@ public class AdjacencyList<V> implements MyGraph<V> {
             throw new NoSuchElementException("Vertex does not exist");
         }
         
-        // 获取邻居列表
+        // Get the list of neighbors
         List<V> neighbors = adjacencyLists.get(vertexIndex);
         return new SimpleSet<>(neighbors);
     }
@@ -218,20 +216,20 @@ public class AdjacencyList<V> implements MyGraph<V> {
             throw new IllegalArgumentException("Vertex cannot be null");
         }
         
-        // 检查顶点是否已存在
+        // Check if the vertex already exists
         boolean exists = containsVertex(vertex);
         
-        // 如果顶点不存在，则添加它
+        // Add the vertex if it doesn't exist
         if (!exists) {
             addVertex(vertex);
         }
         
-        // 返回顶点是否已存在
+        // Return whether the vertex already existed
         return exists;
     }
     
     /**
-     * 简单的Set实现，包装ArrayList
+     * Simple Set implementation, wrapping ArrayList
      */
     private static class SimpleSet<E> implements Set<E> {
         private final List<E> elements;
@@ -317,8 +315,6 @@ public class AdjacencyList<V> implements MyGraph<V> {
         public boolean removeAll(Collection<?> c) {
             return elements.removeAll(c);
         }
-        
-
         
         @Override
         public void clear() {

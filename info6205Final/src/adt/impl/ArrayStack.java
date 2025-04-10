@@ -3,31 +3,31 @@ package adt.impl;
 import adt.MyStack;
 
 /**
- * 基于数组的栈实现
- * @param <T> 栈中元素的类型
+ * Stack implementation based on array
+ * @param <T> Type of elements in the stack
  */
 public class ArrayStack<T> implements MyStack<T> {
     private static final int DEFAULT_CAPACITY = 10;
     private Object[] elements;
-    private int top; // 栈顶指针
+    private int top; // Stack top pointer
     
     /**
-     * 创建一个默认容量的空栈
+     * Creates an empty stack with default capacity
      */
     public ArrayStack() {
         this(DEFAULT_CAPACITY);
     }
     
     /**
-     * 创建一个指定容量的空栈
-     * @param initialCapacity 初始容量
+     * Creates an empty stack with specified capacity
+     * @param initialCapacity Initial capacity
      */
     public ArrayStack(int initialCapacity) {
         if (initialCapacity <= 0) {
             throw new IllegalArgumentException("Capacity must be positive");
         }
         elements = new Object[initialCapacity];
-        top = -1; // 空栈的栈顶指针为-1
+        top = -1; // Top pointer of an empty stack is -1
     }
     
     @Override
@@ -43,7 +43,7 @@ public class ArrayStack<T> implements MyStack<T> {
             throw new EmptyStackException("Stack is empty");
         }
         T result = (T) elements[top];
-        elements[top--] = null; // 避免内存泄漏
+        elements[top--] = null; // Avoid memory leak
         return result;
     }
     
@@ -68,7 +68,7 @@ public class ArrayStack<T> implements MyStack<T> {
     
     @Override
     public void clear() {
-        // 清空引用避免内存泄漏
+        // Clear references to avoid memory leak
         for (int i = 0; i <= top; i++) {
             elements[i] = null;
         }
@@ -76,11 +76,11 @@ public class ArrayStack<T> implements MyStack<T> {
     }
     
     /**
-     * 确保栈有足够的容量
+     * Ensure the stack has enough capacity
      */
     private void ensureCapacity() {
         if (top == elements.length - 1) {
-            // 扩容为原来的两倍
+            // Double the capacity
             int newCapacity = elements.length * 2;
             Object[] newElements = new Object[newCapacity];
             System.arraycopy(elements, 0, newElements, 0, elements.length);
@@ -89,7 +89,7 @@ public class ArrayStack<T> implements MyStack<T> {
     }
     
     /**
-     * 自定义栈为空异常
+     * Custom empty stack exception
      */
     public static class EmptyStackException extends RuntimeException {
         public EmptyStackException(String message) {

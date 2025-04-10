@@ -1,44 +1,44 @@
 package adt;
 
 /**
- * 栈接口 - 定义栈的基本操作
- * @param <T> 栈中元素的类型
- */
+* Stack interface - defines basic operations of the stack
+* @param <T> the type of elements in the stack
+*/
 public interface MyStack<T> {
-    /**
-     * 将元素推入栈顶
-     * @param item 要推入的元素
-     */
+	/**
+	* Push an element to the top of the stack
+	* @param item The element to be pushed
+	*/
     void push(T item);
     
     /**
-     * 从栈顶弹出并返回元素
-     * @return 栈顶元素
-     * @throws EmptyStackException 如果栈为空
-     */
+    * Pop and return the element from the top of the stack
+    * @return the top element of the stack
+    * @throws EmptyStackException if the stack is empty
+    */
     T pop();
     
     /**
-     * 查看栈顶元素但不移除
-     * @return 栈顶元素
-     * @throws EmptyStackException 如果栈为空
-     */
+    * View the top element of the stack but do not remove it
+    * @return the top element of the stack
+    * @throws EmptyStackException if the stack is empty
+    */
     T peek();
     
     /**
-     * 检查栈是否为空
-     * @return 栈为空时返回true，否则返回false
-     */
+    * Check if the stack is empty
+    * @return Returns true if the stack is empty, otherwise returns false
+    */
     boolean isEmpty();
     
     /**
-     * 返回栈中元素个数
-     * @return 栈中元素个数
-     */
+    * Return the number of elements in the stack
+    * @return the number of elements in the stack
+    */
     int size();
     
     /**
-     * 清空栈中所有元素
-     */
+    * Clear all elements in the stack
+    */
     void clear();
 }

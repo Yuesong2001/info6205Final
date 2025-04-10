@@ -3,92 +3,92 @@ package adt;
 import java.util.List;
 
 /**
- * 哈希映射接口 - 定义键值对映射的基本操作
- * @param <K> 键的类型
- * @param <V> 值的类型
- */
+* Hash map interface - defines basic operations for key-value mapping
+* @param <K> key type
+* @param <V> value type
+*/
 public interface MyMap<K, V> {
-    /**
-     * 将指定键值对放入映射中
-     * @param key 键
-     * @param value 值
-     * @return 如果键已存在，返回旧值；否则返回null
-     */
+	/**
+	* Put the specified key-value pair into the map
+	* @param key key
+	* @param value value
+	* @return If the key already exists, return the old value; otherwise return null
+	*/
     V put(K key, V value);
     
     /**
-     * 获取指定键关联的值
-     * @param key 键
-     * @return 关联的值，如果键不存在则返回null
-     */
+    * Get the value associated with the specified key
+    * @param key key
+    * @return the associated value, or null if the key does not exist
+    */
     V get(K key);
     
     /**
-     * 删除指定键的映射
-     * @param key 键
-     * @return 被删除的值，如果键不存在则返回null
-     */
+    * Delete the mapping of the specified key
+    * @param key key
+    * @return the deleted value, or null if the key does not exist
+    */
     V remove(K key);
     
     /**
-     * 检查映射中是否包含指定键
-     * @param key 键
-     * @return 包含则返回true，否则返回false
-     */
+    * Check if the map contains the specified key
+    * @param key key
+    * @return Returns true if it contains, otherwise returns false
+    */
     boolean containsKey(K key);
     
     /**
-     * 获取映射中键值对的数量
-     * @return 键值对数量
-     */
+    * Get the number of key-value pairs in the map
+    * @return the number of key-value pairs
+    */
     int size();
     
     /**
-     * 检查映射是否为空
-     * @return 为空则返回true，否则返回false
-     */
+    * Check if the mapping is empty
+    * @return Returns true if it is empty, otherwise returns false
+    */
     boolean isEmpty();
     
     /**
-     * 清空映射中的所有键值对
-     */
+    * Clear all key-value pairs in the map
+    */
     void clear();
     
     /**
-     * 获取所有键的集合
-     * @return 包含所有键的列表
-     */
+    * Get a collection of all keys
+    * @return a list containing all keys
+    */
     List<K> keySet();
     
     /**
-     * 获取所有值的集合
-     * @return 包含所有值的列表
-     */
+    * Get a collection of all values
+    * @return a list containing all values
+    */
     List<V> values();
     
     V putIfAbsent(K key, V value);
     
     /**
-     * 代表哈希映射中的键值对
-     */
+    * Represents a key-value pair in a hash map
+    */
     interface Entry<K, V> {
-        /**
-         * 获取键
-         * @return 键
-         */
+    	/**
+    	* Get key
+    	* @return key
+    	*/
         K getKey();
         
         /**
-         * 获取值
-         * @return 值
-         */
+        * Get value
+        * @return value
+        */
         V getValue();
         
         /**
-         * 设置新值
-         * @param value 新值
-         * @return 旧值
-         */
+        * Set new value
+        * @param value new value
+        * @return old value
+        */
         V setValue(V value);
         
         

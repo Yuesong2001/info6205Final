@@ -10,41 +10,41 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 /**
- * 基于二叉堆的优先队列实现
- * @param <T> 队列中元素的类型
+ * Priority queue implementation based on binary heap
+ * @param <T> Type of elements in the queue
  */
 public class PriorityQueue<T> implements MyPriorityQueue<T> {
-    // 默认初始容量
+    // Default initial capacity
     private static final int DEFAULT_INITIAL_CAPACITY = 11;
     
-    // 存储堆的数组
+    // Array for storing the heap
     private Object[] heap;
     
-    // 队列中元素的个数
+    // Number of elements in the queue
     private int size;
     
-    // 比较器，用于确定优先级
+    // Comparator used to determine priority
     private final Comparator<? super T> comparator;
     
     /**
-     * 创建一个空的优先队列，使用元素的自然顺序
+     * Creates an empty priority queue using elements' natural ordering
      */
     public PriorityQueue() {
         this(DEFAULT_INITIAL_CAPACITY, null);
     }
     
     /**
-     * 创建一个空的优先队列，使用给定的比较器
-     * @param comparator 用于确定优先级的比较器
+     * Creates an empty priority queue using the given comparator
+     * @param comparator Comparator used to determine priority
      */
     public PriorityQueue(Comparator<? super T> comparator) {
         this(DEFAULT_INITIAL_CAPACITY, comparator);
     }
     
     /**
-     * 创建一个指定初始容量的空优先队列，使用给定的比较器
-     * @param initialCapacity 初始容量
-     * @param comparator 用于确定优先级的比较器
+     * Creates an empty priority queue with specified initial capacity using the given comparator
+     * @param initialCapacity Initial capacity
+     * @param comparator Comparator used to determine priority
      */
     public PriorityQueue(int initialCapacity, Comparator<? super T> comparator) {
         if (initialCapacity < 1) {
@@ -61,7 +61,7 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
             throw new NullPointerException("Cannot add null element to priority queue");
         }
         
-        // 如果需要扩容
+        // If capacity expansion is needed
         if (size >= heap.length) {
             grow();
         }
@@ -78,13 +78,13 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
         
         int lastIdx = size - 1;
         @SuppressWarnings("unchecked")
-        T result = (T) heap[0]; // 根元素（最高优先级）
+        T result = (T) heap[0]; // Root element (highest priority)
         T lastElement = (T) heap[lastIdx];
-        heap[lastIdx] = null; // 清除最后一个元素的引用
+        heap[lastIdx] = null; // Clear reference to the last element
         size--;
         
         if (size > 0) {
-            // 将最后一个元素放到根位置，然后向下调整
+            // Move the last element to the root position, then adjust downward
             siftDown(0, lastElement);
         }
         
@@ -113,7 +113,7 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     
     @Override
     public void clear() {
-        // 清除所有元素的引用以帮助GC
+        // Clear all element references to help GC
         for (int i = 0; i < size; i++) {
             heap[i] = null;
         }
@@ -123,20 +123,20 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     public List<T> toList() {
         List<T> result = new ArrayList<>(size());
         
-        // 创建堆的副本，这样我们可以在不修改原始堆的情况下移除元素
+        // Create a copy of the heap so we can remove elements without modifying the original heap
         Object[] copy = Arrays.copyOf(heap, size);
         int copySize = size;
         
-        // 模拟不断移除堆顶元素，将其添加到结果列表中
+        // Simulate removing the heap's root element repeatedly, adding it to the result list
         while (copySize > 0) {
             @SuppressWarnings("unchecked")
-            T root = (T) copy[0]; // 取堆顶元素
+            T root = (T) copy[0]; // Get the root element
             result.add(root);
             
-            // 将最后一个元素移到根位置
+            // Move the last element to the root position
             copy[0] = copy[--copySize];
             if (copySize > 0) {
-                // 向下调整堆
+                // Adjust the heap downward
             	siftDownCopy(0, (T)copy[0], copy, copySize);
             }
         }
@@ -145,7 +145,7 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
 
     /**
-     * 在堆副本上执行向下调整，用于toList方法
+     * Perform downward adjustment on heap copy, used for toList method
      */
     @SuppressWarnings("unchecked")
     private void siftDownCopy(int k, T item, Object[] copy, int copySize) {
@@ -157,7 +157,7 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
 
     /**
-     * 在堆副本上使用元素的自然顺序进行向下调整
+     * Perform downward adjustment using elements' natural ordering on heap copy
      */
     @SuppressWarnings("unchecked")
     private void siftDownComparableCopy(int k, T item, Object[] copy, int copySize) {
@@ -185,7 +185,7 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
 
     /**
-     * 在堆副本上使用比较器进行向下调整
+     * Perform downward adjustment using comparator on heap copy
      */
     @SuppressWarnings("unchecked")
     private void siftDownUsingComparatorCopy(int k, T item, Object[] copy, int copySize) {
@@ -212,9 +212,9 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 移除满足给定谓词的所有元素
-     * @param filter 用于确定是否移除元素的谓词
-     * @return 如果队列因移除操作而改变，则返回true
+     * Remove all elements that satisfy the given predicate
+     * @param filter Predicate used to determine whether to remove an element
+     * @return true if the queue was changed as a result of the removal operation
      */
     public boolean removeIf(Predicate<? super T> filter) {
         if (filter == null) {
@@ -223,30 +223,30 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
         
         boolean removed = false;
         
-        // 创建一个新的数组来存储不被移除的元素
+        // Create a new array to store elements that should not be removed
         Object[] newHeap = new Object[heap.length];
         int newSize = 0;
         
-        // 遍历当前堆，保留不满足移除条件的元素
+        // Traverse the current heap, keeping elements that don't satisfy the removal condition
         for (int i = 0; i < size; i++) {
             @SuppressWarnings("unchecked")
             T element = (T) heap[i];
             
-            // 如果元素不满足过滤条件，则保留
+            // Keep the element if it doesn't satisfy the filter condition
             if (!filter.test(element)) {
                 newHeap[newSize++] = element;
             } else {
-                removed = true; // 标记有元素被移除
+                removed = true; // Mark that an element was removed
             }
         }
         
-        // 如果有元素被移除，需要重建堆
+        // If elements were removed, rebuild the heap
         if (removed) {
-            // 更新堆和大小
+            // Update the heap and size
             heap = newHeap;
             size = newSize;
             
-            // 重建堆（从最后一个非叶子节点开始向上调整）
+            // Rebuild the heap (starting from the last non-leaf node and moving upward)
             for (int i = (size >>> 1) - 1; i >= 0; i--) {
                 @SuppressWarnings("unchecked")
                 T element = (T) heap[i];
@@ -258,7 +258,7 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 扩展数组容量
+     * Expand array capacity
      */
     private void grow() {
         int oldCapacity = heap.length;
@@ -267,9 +267,9 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 向上调整新添加的元素的位置
-     * @param k 新元素的位置
-     * @param item 新元素
+     * Adjust the position of a newly added element upward
+     * @param k Position of the new element
+     * @param item New element
      */
     @SuppressWarnings("unchecked")
     private void siftUp(int k, T item) {
@@ -281,21 +281,21 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 使用元素的自然顺序进行向上调整
-     * @param k 新元素的位置
-     * @param item 新元素
+     * Adjust upward using elements' natural ordering
+     * @param k Position of the new element
+     * @param item New element
      */
     @SuppressWarnings("unchecked")
     private void siftUpComparable(int k, T item) {
         Comparable<? super T> key = (Comparable<? super T>) item;
         
         while (k > 0) {
-            int parent = (k - 1) >>> 1; // 父节点索引
+            int parent = (k - 1) >>> 1; // Parent node index
             Object e = heap[parent];
             if (key.compareTo((T) e) >= 0) {
-                break; // 如果新元素大于等于父节点，则停止调整
+                break; // If the new element is greater than or equal to the parent, stop adjusting
             }
-            heap[k] = e; // 父节点下移
+            heap[k] = e; // Parent node moves down
             k = parent;
         }
         
@@ -303,19 +303,19 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 使用比较器进行向上调整
-     * @param k 新元素的位置
-     * @param item 新元素
+     * Adjust upward using comparator
+     * @param k Position of the new element
+     * @param item New element
      */
     @SuppressWarnings("unchecked")
     private void siftUpUsingComparator(int k, T item) {
         while (k > 0) {
-            int parent = (k - 1) >>> 1; // 父节点索引
+            int parent = (k - 1) >>> 1; // Parent node index
             Object e = heap[parent];
             if (comparator.compare(item, (T) e) >= 0) {
-                break; // 如果新元素大于等于父节点，则停止调整
+                break; // If the new element is greater than or equal to the parent, stop adjusting
             }
-            heap[k] = e; // 父节点下移
+            heap[k] = e; // Parent node moves down
             k = parent;
         }
         
@@ -323,9 +323,9 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 向下调整元素的位置
-     * @param k 元素的起始位置
-     * @param item 要调整的元素
+     * Adjust the position of an element downward
+     * @param k Starting position of the element
+     * @param item Element to adjust
      */
     @SuppressWarnings("unchecked")
     private void siftDown(int k, T item) {
@@ -337,31 +337,31 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 使用元素的自然顺序进行向下调整
-     * @param k 元素的起始位置
-     * @param item 要调整的元素
+     * Adjust downward using elements' natural ordering
+     * @param k Starting position of the element
+     * @param item Element to adjust
      */
     @SuppressWarnings("unchecked")
     private void siftDownComparable(int k, T item) {
         Comparable<? super T> key = (Comparable<? super T>) item;
-        int half = size >>> 1; // 最后一个非叶子节点的索引
+        int half = size >>> 1; // Index of the last non-leaf node
         
         while (k < half) {
-            int child = (k << 1) + 1; // 左子节点索引
+            int child = (k << 1) + 1; // Left child node index
             Object c = heap[child];
             int right = child + 1;
             
-            // 如果右子节点存在且优先级高于左子节点
+            // If right child exists and has higher priority than left child
             if (right < size && ((Comparable<? super T>) c).compareTo((T) heap[right]) > 0) {
                 c = heap[child = right];
             }
             
-            // 如果key优先级不低于子节点，则停止调整
+            // If key's priority is not lower than the child's, stop adjusting
             if (key.compareTo((T) c) <= 0) {
                 break;
             }
             
-            heap[k] = c; // 子节点上移
+            heap[k] = c; // Child node moves up
             k = child;
         }
         
@@ -369,30 +369,30 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 使用比较器进行向下调整
-     * @param k 元素的起始位置
-     * @param item 要调整的元素
+     * Adjust downward using comparator
+     * @param k Starting position of the element
+     * @param item Element to adjust
      */
     @SuppressWarnings("unchecked")
     private void siftDownUsingComparator(int k, T item) {
-        int half = size >>> 1; // 最后一个非叶子节点的索引
+        int half = size >>> 1; // Index of the last non-leaf node
         
         while (k < half) {
-            int child = (k << 1) + 1; // 左子节点索引
+            int child = (k << 1) + 1; // Left child node index
             Object c = heap[child];
             int right = child + 1;
             
-            // 如果右子节点存在且优先级高于左子节点
+            // If right child exists and has higher priority than left child
             if (right < size && comparator.compare((T) c, (T) heap[right]) > 0) {
                 c = heap[child = right];
             }
             
-            // 如果item优先级不低于子节点，则停止调整
+            // If item's priority is not lower than the child's, stop adjusting
             if (comparator.compare(item, (T) c) <= 0) {
                 break;
             }
             
-            heap[k] = c; // 子节点上移
+            heap[k] = c; // Child node moves up
             k = child;
         }
         
@@ -400,7 +400,7 @@ public class PriorityQueue<T> implements MyPriorityQueue<T> {
     }
     
     /**
-     * 自定义优先队列为空异常
+     * Custom empty priority queue exception
      */
     public static class EmptyPriorityQueueException extends RuntimeException {
         public EmptyPriorityQueueException(String message) {
