@@ -1,6 +1,7 @@
 package view;
 
 import controller.NavigationController;
+
 import controller.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,76 +39,76 @@ public class EventFormView extends VBox {
     private DatePicker datePicker;
 
     /**
-     * 构造函数 - 使用当前日期创建事件表单
-     * @param user 当前登录的用户
-     * @param dataStore 数据存储对象
-     * @param navController 导航控制器
+     * Constructor - Creates an event form with the current date
+     * @param user The currently logged in user
+     * @param dataStore The data storage object
+     * @param navController The navigation controller
      */
     public EventFormView(User user, DataStore dataStore, NavigationController navController) {
-        this(user, dataStore, navController, LocalDate.now()); // 调用另一个构造函数，使用当前日期
+        this(user, dataStore, navController, LocalDate.now()); // Call the other constructor with the current date
     }
 
     /**
-     * 构造函数 - 使用指定日期创建事件表单
-     * @param user 当前登录的用户
-     * @param dataStore 数据存储对象
-     * @param navController 导航控制器
-     * @param initialDate 初始选中的日期
+     * Constructor - Creates an event form with the specified date
+     * @param user The currently logged in user
+     * @param dataStore The data storage object
+     * @param navController The navigation controller
+     * @param initialDate The initially selected date
      */
     public EventFormView(User user, DataStore dataStore, NavigationController navController, LocalDate initialDate) {
         this.dataStore = dataStore;
         this.currentUser = user;
         
-        // 设置布局属性
+        // Set layout properties
         setSpacing(20);
         setAlignment(Pos.CENTER);
         setPadding(new Insets(30));
         setStyle("-fx-background-color: #f5f8ff;");
 
-        // 标题部分
+        // Title section
         Label titleLabel = new Label("Create New Event");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        // 事件标题字段
+        // Event title field
         Label eventTitleLabel = new Label("Event Title:");
         TextField titleField = new TextField();
         titleField.setPromptText("Enter event title");
         titleField.setPrefWidth(300);
 
-        // 日期选择器
+        // Date picker
         Label dateLabel = new Label("Date:");
         datePicker = new DatePicker(initialDate);
         
-        // 开始时间选择器
+        // Start time selector
         Label startTimeLabel = new Label("Start Time:");
         startHourBox = createHourComboBox();
         startMinuteBox = createMinuteComboBox();
         HBox startTimeBox = new HBox(10);
         startTimeBox.getChildren().addAll(startHourBox, new Text(":"), startMinuteBox);
         
-        // 结束时间选择器
+        // End time selector
         Label endTimeLabel = new Label("End Time:");
         endHourBox = createHourComboBox();
         endMinuteBox = createMinuteComboBox();
         HBox endTimeBox = new HBox(10);
         endTimeBox.getChildren().addAll(endHourBox, new Text(":"), endMinuteBox);
         
-        // 设置默认时间值 (10:00 - 11:00)
+        // Set default time values (10:00 - 11:00)
         startHourBox.setValue("10");
         startMinuteBox.setValue("00");
         endHourBox.setValue("11");
         endMinuteBox.setValue("00");
 
-        // 参与者搜索和选择部分
+        // Participant search and selection section
         VBox participantSection = createParticipantSection();
 
-        // 优先级选择
+        // Priority selection
         Label priorityLabel = new Label("Priority:");
         ComboBox<PriorityLevel> priorityBox = new ComboBox<>();
         priorityBox.getItems().addAll(PriorityLevel.LOW, PriorityLevel.MEDIUM, PriorityLevel.HIGH);
         priorityBox.setValue(PriorityLevel.MEDIUM);
 
-        // 按钮部分
+        // Button section
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER);
         
@@ -121,7 +122,7 @@ public class EventFormView extends VBox {
         
         buttonBox.getChildren().addAll(cancelBtn, saveBtn);
 
-        // 创建表单布局
+        // Create form layout
         GridPane formGrid = new GridPane();
         formGrid.setHgap(15);
         formGrid.setVgap(18);
@@ -129,17 +130,17 @@ public class EventFormView extends VBox {
         formGrid.setPadding(new Insets(10));
         formGrid.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-background-radius: 5;");
 
-        // 设置表单标签样式
+        // Set form label styles
         eventTitleLabel.setStyle("-fx-font-weight: bold;");
         dateLabel.setStyle("-fx-font-weight: bold;");
         startTimeLabel.setStyle("-fx-font-weight: bold;");
         endTimeLabel.setStyle("-fx-font-weight: bold;");
         priorityLabel.setStyle("-fx-font-weight: bold;");
         
-        // 设置表单字段样式
+        // Set form field styles
         titleField.setStyle("-fx-padding: 8; -fx-border-color: #ddd; -fx-border-radius: 3;");
         
-        // 将表单元素添加到网格中
+        // Add form elements to the grid
         int row = 0;
         formGrid.add(eventTitleLabel, 0, row);
         formGrid.add(titleField, 1, row);
@@ -164,12 +165,12 @@ public class EventFormView extends VBox {
         formGrid.add(priorityLabel, 0, row);
         formGrid.add(priorityBox, 1, row);
 
-        // 设置按钮动作
+        // Set button actions
         cancelBtn.setOnAction(e -> navController.popPane());
 
-        // 保存按钮的动作处理
+        // Save button action handler
         saveBtn.setOnAction(e -> {
-            // 验证输入
+            // Validate inputs
             if (!validateInputs(titleField.getText())) {
                 return;
             }
@@ -191,14 +192,14 @@ public class EventFormView extends VBox {
             LocalDateTime startDateTime = LocalDateTime.of(date, startTime);
             LocalDateTime endDateTime = LocalDateTime.of(date, endTime);
             
-            // 验证结束时间是否晚于开始时间
+            // Validate that end time is after start time
             if (!endDateTime.isAfter(startDateTime)) {
                 showAlert(Alert.AlertType.ERROR, "Invalid Time", 
                     "The end time must be later than the start time.");
                 return;
             }
             
-            // 检查时间冲突
+            // Check for time conflicts
             if (checkTimeConflict(user.getUserId(), date, startTime, endTime)) {
                 boolean confirmOverlap = showConfirmation("Time Conflict", 
                     "This event overlaps with existing events. Do you want to schedule it anyway?");
@@ -207,34 +208,34 @@ public class EventFormView extends VBox {
                 }
             }
             
-            // 获取所有参与者的用户名
+            // Get all participant usernames
             List<String> participantNames = selectedParticipants.stream()
                 .map(User::getUsername)
                 .collect(Collectors.toList());
             
-            // 确保创建者自己也在参与者列表中
+            // Ensure the creator is also in the participant list
             if (!participantNames.contains(user.getUsername())) {
                 participantNames.add(user.getUsername());
             }
             
-            // 创建事件并添加到数据存储中
+            // Create event and add to data store
             Event newEvent = new Event(eventId, title, startDateTime, endDateTime,
                     participantNames, priorityBox.getValue());
             dataStore.addEvent(user.getUserId(), newEvent);
 
-            // 显示成功消息
+            // Display success message
             showAlert(Alert.AlertType.INFORMATION, "Success", "Event successfully created!");
             
-            // 返回上一个界面
+            // Return to previous screen
             navController.popPane();
             
-            // 打印日志信息
+            // Print log information
             System.out.println("Save Event => " + newEvent.getTitle() 
                 + ", startTime=" + newEvent.getStartTime() 
                 + ", userId=" + user.getUserId());
         });
 
-        // 将所有组件添加到主VBox布局中
+        // Add all components to the main VBox layout
         getChildren().addAll(
             titleLabel,
             new Separator(),
@@ -245,14 +246,14 @@ public class EventFormView extends VBox {
     }
     
     /**
-     * 创建参与者搜索和选择部分
-     * @return 包含搜索字段和参与者列表的VBox
+     * Create the participant search and selection section
+     * @return VBox containing search field and participant list
      */
     private VBox createParticipantSection() {
         VBox section = new VBox(8);
         section.setStyle("-fx-border-color: #e0e0e0; -fx-border-radius: 3; -fx-padding: 10;");
         
-        // 搜索部分
+        // Search section
         HBox searchBox = new HBox(5);
         searchField = new TextField();
         searchField.setPromptText("Search users...");
@@ -263,27 +264,27 @@ public class EventFormView extends VBox {
         
         searchBox.getChildren().addAll(searchField, searchBtn);
         
-        // 搜索结果部分
+        // Search results section
         Label resultsLabel = new Label("Search Results:");
         resultsLabel.setStyle("-fx-font-weight: bold;");
         
-        // 创建搜索结果ListView
+        // Create search results ListView
         ListView<User> searchResultsView = new ListView<>();
         searchResultsView.setPrefHeight(100);
         searchResultsView.setPlaceholder(new Label("No results found"));
         searchResultsView.setCellFactory(lv -> new UserListCell());
         
-        // 已选参与者部分
+        // Selected participants section
         Label selectedLabel = new Label("Selected Participants:");
         selectedLabel.setStyle("-fx-font-weight: bold;");
         
-        // 创建参与者ListView
+        // Create participants ListView
         participantListView = new ListView<>();
         participantListView.setPrefHeight(100);
         participantListView.setPlaceholder(new Label("No participants selected"));
         participantListView.setCellFactory(lv -> new UserListCell());
         
-        // 添加和移除按钮
+        // Add and remove buttons
         HBox actionBox = new HBox(10);
         actionBox.setAlignment(Pos.CENTER);
         
@@ -295,7 +296,7 @@ public class EventFormView extends VBox {
         
         actionBox.getChildren().addAll(addBtn, removeBtn);
         
-        // 搜索逻辑实现
+        // Search logic implementation
         Runnable performSearch = () -> {
             String searchText = searchField.getText().trim();
             if (searchText.isEmpty()) {
@@ -305,18 +306,18 @@ public class EventFormView extends VBox {
             
             System.out.println("Searching for: " + searchText);
             
-            // 从DataStore中获取所有用户
+            // Get all users from DataStore
             List<User> allUsers = new ArrayList<>(dataStore.getUserMap().values());
             System.out.println("Total users in system: " + allUsers.size());
             
-            // 过滤符合搜索条件的用户，忽略大小写
+            // Filter users that match search criteria, case insensitive
             List<User> filteredUsers = new ArrayList<>();
             
             for (User user : allUsers) {
-                // 检查用户名是否包含搜索文本
+                // Check if username contains search text
                 boolean matchesSearch = user.getUsername().toLowerCase().contains(searchText.toLowerCase());
                 
-                // 检查用户是否已在选定列表中
+                // Check if user is already in selected list
                 boolean alreadySelected = false;
                 for (User selected : selectedParticipants) {
                     if (selected.getUserId().equals(user.getUserId())) {
@@ -325,16 +326,16 @@ public class EventFormView extends VBox {
                     }
                 }
                 
-                // 检查是否为当前用户
+                // Check if user is current user
                 boolean isCurrentUser = user.getUserId().equals(currentUser.getUserId());
                 
-                // 只有满足所有条件的用户才添加到结果中
+                // Only add users that meet all conditions
                 if (matchesSearch && !alreadySelected && !isCurrentUser) {
                     filteredUsers.add(user);
                 }
             }
             
-            // 清空并设置新的搜索结果
+            // Clear and set new search results
             searchResultsView.getItems().clear();
             
             if (filteredUsers.isEmpty()) {
@@ -345,21 +346,21 @@ public class EventFormView extends VBox {
             }
         };
         
-        // 搜索按钮点击事件
+        // Search button click event
         searchBtn.setOnAction(e -> performSearch.run());
         
-        // 搜索字段回车键事件
+        // Search field enter key event
         searchField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 performSearch.run();
             }
         });
         
-        // 添加用户按钮事件
+        // Add user button event
         addBtn.setOnAction(e -> {
             User selectedUser = searchResultsView.getSelectionModel().getSelectedItem();
             if (selectedUser != null) {
-                // 检查用户是否已在列表中
+                // Check if user is already in the list
                 boolean alreadyExists = false;
                 for (User participant : selectedParticipants) {
                     if (participant.getUserId().equals(selectedUser.getUserId())) {
@@ -376,14 +377,14 @@ public class EventFormView extends VBox {
             }
         });
         
-        // 移除用户按钮事件
+        // Remove user button event
         removeBtn.setOnAction(e -> {
             User selectedUser = participantListView.getSelectionModel().getSelectedItem();
             if (selectedUser != null) {
                 selectedParticipants.remove(selectedUser);
                 participantListView.getItems().remove(selectedUser);
                 
-                // 如果当前搜索结果包含此用户的条件，把它重新加到搜索结果中
+                // If current search results include this user, add it back to search results
                 String searchText = searchField.getText().trim();
                 if (!searchText.isEmpty() && 
                     selectedUser.getUsername().toLowerCase().contains(searchText.toLowerCase())) {
@@ -392,7 +393,7 @@ public class EventFormView extends VBox {
             }
         });
         
-        // 添加所有组件到部分
+        // Add all components to section
         section.getChildren().addAll(
             searchBox,
             resultsLabel,
@@ -406,9 +407,9 @@ public class EventFormView extends VBox {
     }
     
     /**
-     * 验证用户输入
-     * @param title 事件标题
-     * @return 如果输入有效则返回true，否则返回false
+     * Validate user inputs
+     * @param title Event title
+     * @return true if inputs are valid, false otherwise
      */
     private boolean validateInputs(String title) {
         if (title == null || title.trim().isEmpty()) {
@@ -426,57 +427,24 @@ public class EventFormView extends VBox {
         return true;
     }
     
-    /**
-     * 检查时间是否与现有事件冲突
-     * @param userId 用户ID
-     * @param date 事件日期
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return 如果有冲突则返回true，否则返回false
-     */
-    private boolean checkTimeConflict(String userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        List<Event> existingEvents = dataStore.getUserEventsByDay(userId, date);
-        
-        LocalDateTime newStartDateTime = LocalDateTime.of(date, startTime);
-        LocalDateTime newEndDateTime = LocalDateTime.of(date, endTime);
-        
-        for (Event event : existingEvents) {
-            // 检查新事件是否与现有事件重叠
-            LocalDateTime existingStart = event.getStartTime();
-            LocalDateTime existingEnd = event.getEndTime();
-            
-            // 重叠条件：新事件的开始时间在现有事件的时间范围内
-            // 或新事件的结束时间在现有事件的时间范围内
-            // 或新事件完全包含现有事件
-            boolean overlaps = 
-                (newStartDateTime.isBefore(existingEnd) && newStartDateTime.isAfter(existingStart)) || 
-                (newEndDateTime.isAfter(existingStart) && newEndDateTime.isBefore(existingEnd)) ||
-                (newStartDateTime.isBefore(existingStart) && newEndDateTime.isAfter(existingEnd));
-            
-            if (overlaps) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
+
     
     /**
-     * 用户列表单元格
+     * User list cell
      */
     private static class UserListCell extends ListCell<User> {
         @Override
         protected void updateItem(User user, boolean empty) {
             super.updateItem(user, empty);
             
-            // 清除旧内容
+            // Clear old content
             setText(null);
             setGraphic(null);
             
             if (empty || user == null) {
-                // 单元格为空不显示内容
+                // Cell is empty, don't display content
             } else {
-                // 设置单元格文本和样式
+                // Set cell text and style
                 setText(user.getUsername() + " (ID: " + user.getUserId() + ")");
                 setStyle("-fx-padding: 5; -fx-font-size: 12px;");
             }
@@ -484,8 +452,8 @@ public class EventFormView extends VBox {
     }
     
     /**
-     * 创建小时选择下拉框
-     * @return 包含0-23小时选项的ComboBox
+     * Create hour selection combo box
+     * @return ComboBox with 0-23 hour options
      */
     private ComboBox<String> createHourComboBox() {
         ComboBox<String> hourBox = new ComboBox<>();
@@ -496,8 +464,8 @@ public class EventFormView extends VBox {
     }
     
     /**
-     * 创建分钟选择下拉框
-     * @return 包含0-59分钟选项的ComboBox
+     * Create minute selection combo box
+     * @return ComboBox with 0-59 minute options
      */
     private ComboBox<String> createMinuteComboBox() {
         ComboBox<String> minuteBox = new ComboBox<>();
@@ -514,11 +482,35 @@ public class EventFormView extends VBox {
         return minuteBox;
     }
     
+    private boolean checkTimeConflict(String userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        List<Event> existingEvents = dataStore.getUserEventsByDay(userId, date);
+        
+        LocalDateTime newStartDateTime = LocalDateTime.of(date, startTime);
+        LocalDateTime newEndDateTime = LocalDateTime.of(date, endTime);
+        
+        for (Event event : existingEvents) {
+            // check if new event is overlap with existing events
+            LocalDateTime existingStart = event.getStartTime();
+            LocalDateTime existingEnd = event.getEndTime();
+            
+
+            boolean overlaps = 
+                (newStartDateTime.isBefore(existingEnd) || newStartDateTime.isEqual(existingEnd)) && 
+                (newEndDateTime.isAfter(existingStart) || newEndDateTime.isEqual(existingStart));
+            
+            if (overlaps) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     /**
-     * 显示提示对话框
-     * @param alertType 对话框类型
-     * @param title 对话框标题
-     * @param message 显示的消息内容
+     * Display alert dialog
+     * @param alertType Alert type
+     * @param title Dialog title
+     * @param message Display message content
      */
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
@@ -529,10 +521,10 @@ public class EventFormView extends VBox {
     }
     
     /**
-     * 显示确认对话框
-     * @param title 对话框标题
-     * @param message 确认消息内容
-     * @return 如果用户点击了确认按钮则返回true，否则返回false
+     * Display confirmation dialog
+     * @param title Dialog title
+     * @param message Confirmation message content
+     * @return true if user clicked OK button, false otherwise
      */
     private boolean showConfirmation(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

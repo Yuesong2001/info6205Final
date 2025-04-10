@@ -1,7 +1,19 @@
 package model;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import adt.MyMap;
+import adt.impl.ArrayStack;
+import adt.impl.HashMap;
+import adt.MyPriorityQueue;
+import adt.MyStack;
+import adt.impl.PriorityQueue;
+
 
 /**
  * DataStore:
@@ -15,21 +27,21 @@ import java.util.*;
 public class DataStore {
 
     // ========= 1) USER MAP & 2) EVENT MAP =========
-    private Map<String, User> userMap = new HashMap<>();
-    private Map<String, Event> eventMap = new HashMap<>();
+    private MyMap<String, User> userMap = new HashMap<>();
+    private MyMap<String, Event> eventMap = new HashMap<>();
 
     // ========= 3) USER DAILY EVENTS (PriorityQueue) =========
     // userId -> (date -> priority queue of events)
-    private Map<String, Map<LocalDate, PriorityQueue<Event>>> userDailyEvents = new HashMap<>();
+    private MyMap<String, MyMap<LocalDate, PriorityQueue<Event>>> userDailyEvents = new HashMap<>();
 
     // ========= 4) ADJACENCY LIST for user relationships =========
     // userId -> set of friend userIds
-    private Map<String, Set<String>> adjacencyList = new HashMap<>();
+    private MyMap<String, Set<String>> adjacencyList = new HashMap<>();
 
     // ========= 5) STACK for page transitions or undo operations =========
     // This can store different types depending on your usage:
     // e.g., Stack<Pane> for GUI pages, or Stack<Operation> for undo actions.
-    private Stack<Object> stack = new Stack<>();
+    private MyStack<Object> stack = new ArrayStack<>();
 
     /**
      * Constructor:
@@ -80,7 +92,7 @@ public class DataStore {
     /**
      * Get the userMap if needed externally.
      */
-    public Map<String, User> getUserMap() {
+    public MyMap<String, User> getUserMap() {
         return userMap;
     }
 
@@ -124,7 +136,7 @@ public class DataStore {
     /**
      * Expose adjacencyList if you need it externally.
      */
-    public Map<String, Set<String>> getAdjacencyList() {
+    public MyMap<String, Set<String>> getAdjacencyList() {
         return adjacencyList;
     }
 
@@ -175,7 +187,7 @@ public class DataStore {
      * Get events for a user on a specific date, sorted by priority/time in a PQ.
      */
     public List<Event> getUserEventsByDay(String userId, LocalDate day) {
-        Map<LocalDate, PriorityQueue<Event>> dailyMap = userDailyEvents.get(userId);
+        MyMap<LocalDate, PriorityQueue<Event>> dailyMap = userDailyEvents.get(userId);
         if (dailyMap == null) {
             return Collections.emptyList();
         }
@@ -184,13 +196,13 @@ public class DataStore {
             return Collections.emptyList();
         }
         // Copy to a list to avoid modifying the original PQ order
-        return new ArrayList<>(pq);
+        return new ArrayList<>(pq.toList());
     }
 
     /**
      * Expose eventMap if needed externally.
      */
-    public Map<String, Event> getEventMap() {
+    public MyMap<String, Event> getEventMap() {
         return eventMap;
     }
 
@@ -224,9 +236,9 @@ public class DataStore {
 
     // Example usage: push an operation or page name into stack, pop to revert.
     
-    // 新增，删除事件
+    // Remove events
     public boolean removeEvent(String userId, String eventId) {
-        // 确认事件是否存在
+        // Check if events exist
         Event eventToRemove = eventMap.get(eventId);
         if (eventToRemove == null) {
             System.out.println("RemoveEvent: Event not found, eventId=" + eventId);
@@ -237,7 +249,7 @@ public class DataStore {
         LocalDate eventDate = eventToRemove.getStartTime().toLocalDate();
         
         // Check if the user has any events
-        Map<LocalDate, PriorityQueue<Event>> userEvents = userDailyEvents.get(userId);
+        MyMap<LocalDate, PriorityQueue<Event>> userEvents = userDailyEvents.get(userId);
         if (userEvents == null) {
             System.out.println("RemoveEvent: No events for userId=" + userId);
             return false;
@@ -250,7 +262,7 @@ public class DataStore {
             return false;
         }
         
-        // 从priority queue中删除event
+        // Remove events from priority queue
         boolean removed = eventsOnDate.removeIf(event -> event.getEventId().equals(eventId));
         
         // If the priority queue is now empty, remove it from the map
@@ -263,7 +275,7 @@ public class DataStore {
             }
         }
         
-        // 从eventMap中删除
+        // Remove from eventMap
         if (removed) {
             eventMap.remove(eventId);
             System.out.println("RemoveEvent: Successfully removed eventId=" + eventId + ", title=" + eventToRemove.getTitle());

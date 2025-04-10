@@ -1,15 +1,16 @@
 package model;
 
 import java.time.LocalDateTime;
+
 import java.util.List;
 
 public class Event {
-    private String eventId;               // 唯一ID
-    private String title;                 // 事件名称
-    private LocalDateTime startTime;      // 开始时间
-    private LocalDateTime endTime;        // 结束时间
-    private List<String> participants;    // 参与者列表(可以简单用List<String>)
-    private PriorityLevel priority;       // 事件优先级(LOW, MEDIUM, HIGH)
+    private String eventId;               // Unique ID
+    private String title;                 // Event name
+    private LocalDateTime startTime;      // Start time
+    private LocalDateTime endTime;        // End time
+    private List<String> participants;    // List of participants (can simply use List<String>)
+    private PriorityLevel priority;       // Event priority (LOW, MEDIUM, HIGH)
 
     public Event(String eventId, String title, LocalDateTime startTime,
                  LocalDateTime endTime, List<String> participants, PriorityLevel priority) {
@@ -71,7 +72,7 @@ public class Event {
 
 	@Override
 	public String toString() {
-	    // 随便定制一个显示格式
+	    // Custom display format
 	    return String.format("%s (%s ~ %s)", 
 	        this.title, 
 	        this.startTime, 
@@ -80,6 +81,4 @@ public class Event {
 	}
 
 
-    // Getter, Setter, toString()等
-    // ...
 }

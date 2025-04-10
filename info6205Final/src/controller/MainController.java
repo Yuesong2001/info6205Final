@@ -1,6 +1,7 @@
 package controller;
 
 import model.DataStore;
+
 import model.User;
 import view.CalendarView;
 import view.LoginView;
@@ -17,14 +18,14 @@ public class MainController {
         this.currentUser = null;
     }
 
-    // 登录逻辑
+    // Login logic
     public boolean login(String username, String password) {
         User user = dataStore.findUserByUsername(username);
         if (user != null && user.getPassword().equals(password)) {
 
         	this.currentUser=user;
 
-            // 登录成功 -> 切换到日历视图
+            // Login successful -> switch to calendar view
             navigationController.pushPane(new CalendarView(user, dataStore, navigationController,currentUser));
             return true;
         }
@@ -32,10 +33,10 @@ public class MainController {
     }
 
 
-    // 登出逻辑
+    // Logout logic
     public void logout() {
     	this.currentUser = null; //clear user on logout
-        // 回到登录页面
+        // Return to login page
         navigationController.popPane();
     }
     
