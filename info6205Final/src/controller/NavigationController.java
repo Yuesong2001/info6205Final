@@ -1,18 +1,20 @@
 package controller;
 
 import javafx.scene.Scene;
+
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.util.Stack;
+import adt.MyStack;
+import adt.impl.ArrayStack;
 
 public class NavigationController {
     private Scene scene;
     private Pane currentPane;
-    private Stack<Pane> paneStack;
+    private ArrayStack<Pane> paneStack;
 
     public NavigationController() {
-        this.paneStack = new Stack<>();
+        this.paneStack = new ArrayStack<>();
     }
 
     // 把 scene 的设置改为单独的方法

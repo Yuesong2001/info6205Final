@@ -3,6 +3,7 @@ package view;
 
 import java.util.UUID;
 
+
 import controller.MainController;
 import controller.NavigationController;
 import javafx.geometry.Pos;

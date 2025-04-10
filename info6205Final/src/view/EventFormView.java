@@ -1,6 +1,7 @@
 package view;
 
 import controller.NavigationController;
+
 import controller.UserController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -426,14 +427,6 @@ public class EventFormView extends VBox {
         return true;
     }
     
-    /**
-     * 检查时间是否与现有事件冲突
-     * @param userId 用户ID
-     * @param date 事件日期
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return 如果有冲突则返回true，否则返回false
-     */
     private boolean checkTimeConflict(String userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
         List<Event> existingEvents = dataStore.getUserEventsByDay(userId, date);
         
@@ -445,13 +438,13 @@ public class EventFormView extends VBox {
             LocalDateTime existingStart = event.getStartTime();
             LocalDateTime existingEnd = event.getEndTime();
             
-            // 重叠条件：新事件的开始时间在现有事件的时间范围内
-            // 或新事件的结束时间在现有事件的时间范围内
-            // 或新事件完全包含现有事件
+            // 完整的重叠条件：
+            // 1. 如果新事件的开始时间小于等于现有事件的结束时间，且
+            // 2. 新事件的结束时间大于等于现有事件的开始时间
+            // 则两个事件重叠
             boolean overlaps = 
-                (newStartDateTime.isBefore(existingEnd) && newStartDateTime.isAfter(existingStart)) || 
-                (newEndDateTime.isAfter(existingStart) && newEndDateTime.isBefore(existingEnd)) ||
-                (newStartDateTime.isBefore(existingStart) && newEndDateTime.isAfter(existingEnd));
+                (newStartDateTime.isBefore(existingEnd) || newStartDateTime.isEqual(existingEnd)) && 
+                (newEndDateTime.isAfter(existingStart) || newEndDateTime.isEqual(existingStart));
             
             if (overlaps) {
                 return true;

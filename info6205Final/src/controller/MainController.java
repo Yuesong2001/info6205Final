@@ -1,6 +1,7 @@
 package controller;
 
 import model.DataStore;
+
 import model.User;
 import view.CalendarView;
 import view.LoginView;

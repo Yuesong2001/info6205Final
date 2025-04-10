@@ -1,6 +1,7 @@
 package view;
 
 import controller.MainController;
+
 import controller.NavigationController;
 import controller.UserController;
 import javafx.geometry.Insets;
