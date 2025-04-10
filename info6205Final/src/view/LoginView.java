@@ -28,7 +28,7 @@ public class LoginView extends VBox {
 	
     private MainController mainController;
     private NavigationController navController;
-    private DataStore dataStore; // 存起来
+    private DataStore dataStore; // Store it for later use
 
     public LoginView(MainController mainController, NavigationController navController, DataStore dataStore) {
     	
@@ -82,7 +82,7 @@ public class LoginView extends VBox {
                 messageLabel.setText("Login failed! Invalid credentials.");
                 messageLabel.setStyle("-fx-text-fill: red;");
             } else {
-                // 简化处理
+                // Simplified handling
                 messageLabel.setText("Login successful!");
                 messageLabel.setStyle("-fx-text-fill: green;");
                 
@@ -101,20 +101,20 @@ public class LoginView extends VBox {
             String username = userField.getText().trim();
             String password = passField.getText().trim();
             
-            // 简化的判空检查
+            // Simplified empty check
             if (username.isEmpty() || password.isEmpty()) {
                 showErrorAlert("Input Error", "Username/Password cannot be empty");
                 return;
             }
             
-            // 检查是否已存在
+            // Check if user already exists
             if (dataStore.findUserByUsername(username) != null) {
-                // 显示错误弹窗
+                // Show error dialog
                 showErrorAlert("Username Error", "Username already taken, please choose another");
                 return;
             }
             
-            // 否则创建User，并放入userMap
+            // Otherwise create User and add it to userMap
             String newUserId = UUID.randomUUID().toString();
             User newUser = new User(newUserId, username, password);
             dataStore.addUser(newUser); 
@@ -122,10 +122,10 @@ public class LoginView extends VBox {
             messageLabel.setText("Registration successful!");
             messageLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
             
-            // 显示成功提示
+            // Show success notification
             showSuccessAlert("Registration Successful", "Your account has been created successfully!");
             
-            // 注册完成后，回到登录页面
+            // After registration, return to login page
             navController.pushPane(new LoginView(new MainController(dataStore, navController), navController, dataStore));
         });
      // Add elements to grid

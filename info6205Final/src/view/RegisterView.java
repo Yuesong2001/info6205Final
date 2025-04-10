@@ -45,7 +45,7 @@ public class RegisterView extends VBox {
         passField.setPromptText("Enter your password");
 
         
-        Label messageLabel = new Label(); // 用于显示“注册成功 / 失败”消息
+        Label messageLabel = new Label(); // For displaying "registration success / failure" messages
         
         Button registerBtn = new Button("Register");
         registerBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
@@ -54,28 +54,28 @@ public class RegisterView extends VBox {
             String username = userField.getText().trim();
             String password = passField.getText().trim();
             
-            // 简化的判空检查
+            // Simplified empty check
             if (username.isEmpty() || password.isEmpty()) {
                 messageLabel.setText("Username/Password cannot be empty");
                 return;
             }
             
-            // 检查是否已存在
+            // Check if username already exists
             if (dataStore.findUserByUsername(username) != null) {
                 messageLabel.setText("Username already taken, please choose another");
                 return;
             }
             
-            // 否则创建User，并放入userMap
+            // Otherwise create User and add to userMap
             String newUserId = UUID.randomUUID().toString();
             User newUser = new User(newUserId, username, password);
             dataStore.addUser(newUser); 
             
             messageLabel.setText("Registration successful!");
             
-            // 注册完成后，你可以直接回到登录页面
-            // navController.popPane(); // 如果上一个页面是登录
-            // 或者 navController.pushPane(new LoginView(...));
+            // After registration, you can go back to the login page
+            // navController.popPane(); // If the previous page is login
+            // Or navController.pushPane(new LoginView(...));
             
             //navController.pushPane(new LoginView(null, navController, dataStore));
             navController.pushPane(new LoginView(new MainController(dataStore, navController), navController, dataStore));
@@ -87,8 +87,8 @@ public class RegisterView extends VBox {
         backBtn.setMaxWidth(Double.MAX_VALUE);  // Makes the button take up the full width of the container
         backBtn.setOnAction(e -> {
             navController.popPane(); 
-            // 或者 pushPane(new LoginView(dataStore, navController)) 
-            // 看你具体怎么设计流程
+            // Or pushPane(new LoginView(dataStore, navController))
+            // Depending on how you design the flow
         });
         
      // Add elements to grid

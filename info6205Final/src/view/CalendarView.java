@@ -20,10 +20,10 @@ import java.util.Optional;
 
 public class CalendarView extends VBox {
 	
-	 // 类的成员变量
-    private User currentUser ; // 当前登录的用户
-    private DataStore dataStore; // 数据存储对象，用于获取和修改事件数据
-    private NavigationController navController; // 导航控制器，用于页面切换
+	 // Class member variables
+    private User currentUser ; // Currently logged in user
+    private DataStore dataStore; // Data storage object, used to get and modify event data
+    private NavigationController navController; // Navigation controller, used for page transitions
     private MainController mainController;
     
     
@@ -31,41 +31,41 @@ public class CalendarView extends VBox {
 	
     
     /**
-     * 显示提示信息对话框的辅助方法
-     * @param title 对话框标题
-     * @param message 显示的消息内容
+     * Helper method to display alert dialog
+     * @param title Dialog title
+     * @param message Message content to display
      */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
-        alert.setHeaderText(null); // 不显示头部文本
+        alert.setHeaderText(null); // Don't display header text
         alert.setContentText(message);
-        alert.showAndWait(); // 显示对话框并等待用户响应
+        alert.showAndWait(); // Display dialog and wait for user response
     }
     
     /**
-     * 显示确认对话框的辅助方法
-     * @param title 对话框标题
-     * @param message 确认消息内容
-     * @return 如果用户点击了确认按钮则返回true，否则返回false
+     * Helper method to display confirmation dialog
+     * @param title Dialog title
+     * @param message Confirmation message content
+     * @return Returns true if user clicked the confirmation button, otherwise false
      */
     private boolean showConfirmation(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
-        alert.setHeaderText(null); // 不显示头部文本
+        alert.setHeaderText(null); // Don't display header text
         alert.setContentText(message);
         
         Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get() == ButtonType.OK; // 检查用户是否点击了确认按钮
+        return result.isPresent() && result.get() == ButtonType.OK; // Check if user clicked the confirmation button
     }
 
    
 
     /**
-     * 构造函数 - 创建日历视图
-     * @param user 当前登录的用户
-     * @param dataStore 数据存储对象
-     * @param navController 导航控制器
+     * Constructor - Create calendar view
+     * @param user Currently logged in user
+     * @param dataStore Data storage object
+     * @param navController Navigation controller
      */
     public CalendarView(User user, DataStore dataStore, NavigationController navController,User currentUser) {
         
@@ -74,42 +74,42 @@ public class CalendarView extends VBox {
         this.currentUser = currentUser;
         
 
-        // 设置布局属性
-        setSpacing(15); // 设置子元素之间的间距
-        setAlignment(Pos.CENTER); // 居中对齐
-        setPadding(new Insets(20)); // 设置内边距
-        setStyle("-fx-background-color: #f8f8f8;"); // 设置背景颜色
+        // Set layout properties
+        setSpacing(15); // Set spacing between child elements
+        setAlignment(Pos.CENTER); // Center alignment
+        setPadding(new Insets(20)); // Set padding
+        setStyle("-fx-background-color: #f8f8f8;"); // Set background color
 
-        // 创建欢迎标签
+        // Create welcome label
         Label welcomeLabel = new Label("Welcome, " + user.getUsername());
-        welcomeLabel.setFont(Font.font("System", FontWeight.BOLD, 20)); // 设置字体样式
-        welcomeLabel.setStyle("-fx-text-fill: #3366cc;"); // 设置文字颜色
+        welcomeLabel.setFont(Font.font("System", FontWeight.BOLD, 20)); // Set font style
+        welcomeLabel.setStyle("-fx-text-fill: #3366cc;"); // Set text color
 
-        // 日期选择部分
+        // Date selection section
         Label dateLabel = new Label("Select Date:");
-        DatePicker datePicker = new DatePicker(LocalDate.now()); // 创建日期选择器，默认显示当前日期
-        datePicker.setStyle("-fx-pref-width: 200px;"); // 设置日期选择器宽度
+        DatePicker datePicker = new DatePicker(LocalDate.now()); // Create date picker, default to current date
+        datePicker.setStyle("-fx-pref-width: 200px;"); // Set date picker width
         
-        // 创建日期选择栏
-        javafx.scene.layout.HBox dateBar = new javafx.scene.layout.HBox(10); // 水平布局，间距为10
-        dateBar.setAlignment(Pos.CENTER); // 居中对齐
-        dateBar.getChildren().addAll(dateLabel, datePicker); // 添加标签和日期选择器到布局中
+        // Create date selection bar
+        javafx.scene.layout.HBox dateBar = new javafx.scene.layout.HBox(10); // Horizontal layout, spacing 10
+        dateBar.setAlignment(Pos.CENTER); // Center alignment
+        dateBar.getChildren().addAll(dateLabel, datePicker); // Add label and date picker to layout
 
-        // 用于显示事件列表
-        Button showEventsBtn = new Button("Show My Events"); // 显示事件按钮
-        ListView<String> eventListView = new ListView<>(); // 事件列表视图
+        // For displaying event list
+        Button showEventsBtn = new Button("Show My Events"); // Show events button
+        ListView<String> eventListView = new ListView<>(); // Event list view
         
-        // 跟踪选中的事件
-        Label selectedEventLabel = new Label("No event selected"); // 显示选中事件的标签
-        selectedEventLabel.setStyle("-fx-font-style: italic; -fx-text-fill: #555555;"); // 设置标签样式
-        Event[] selectedEvent = new Event[1]; // 使用数组来允许在lambda表达式中修改引用
+        // Track selected event
+        Label selectedEventLabel = new Label("No event selected"); // Label to display selected event
+        selectedEventLabel.setStyle("-fx-font-style: italic; -fx-text-fill: #555555;"); // Set label style
+        Event[] selectedEvent = new Event[1]; // Use array to allow modification of reference in lambda expressions
 
-        // 设置显示事件按钮的点击事件处理
+        // Set click event handler for show events button
         showEventsBtn.setOnAction(e -> {
-            LocalDate selectedDate = datePicker.getValue(); // 获取选中的日期
-            List<Event> events = dataStore.getUserEventsByDay(user.getUserId(), selectedDate); // 获取该日期的事件列表
+            LocalDate selectedDate = datePicker.getValue(); // Get selected date
+            List<Event> events = dataStore.getUserEventsByDay(user.getUserId(), selectedDate); // Get event list for that date
             
-            // 先检查获取到的事件列表是否为空
+            // First check if the retrieved event list is empty
             if (events.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("No Events");
@@ -117,19 +117,19 @@ public class CalendarView extends VBox {
                 alert.setContentText("You have no events on this date!");
                 alert.showAndWait();
                 
-                // 重置选中状态和列表
+                // Reset selection state and list
                 selectedEvent[0] = null;
                 selectedEventLabel.setText("No event selected");
                 eventListView.getItems().clear();
                 eventListView.setUserData(null);
-                return; // 如果没有事件，直接返回，不执行后面的代码
+                return; // If no events, return directly, don't execute code below
             }
             
-            // 重置选中状态
+            // Reset selection state
             selectedEvent[0] = null;
             selectedEventLabel.setText("No event selected");
             
-            // —— 测试信息输出 ——
+            // -- Test information output --
             System.out.println("------ Show My Events ------");
             System.out.println("Selected date: " + selectedDate);
             System.out.println("Current user ID: " + user.getUserId());
@@ -139,31 +139,31 @@ public class CalendarView extends VBox {
             }
             System.out.println("----------------------------");
 
-            // 清空并更新列表视图，显示详细的事件信息
+            // Clear and update list view, display detailed event information
             eventListView.getItems().clear();
             for (Event event : events) {
-                String participants = String.join(", ", event.getParticipants()); // 将参与者列表转换为逗号分隔的字符串
+                String participants = String.join(", ", event.getParticipants()); // Convert participant list to comma-separated string
                 String displayText = String.format("%s\nTime: %s - %s\nPriority: %s\nParticipants: %s", 
                     event.getTitle(),
                     event.getStartTime().toLocalTime(),
                     event.getEndTime().toLocalTime(),
                     event.getPriority(),
                     participants);
-                eventListView.getItems().add(displayText); // 添加格式化的事件信息到列表中
+                eventListView.getItems().add(displayText); // Add formatted event information to list
             }
             
-            // 存储原始事件列表以供后续引用
+            // Store original event list for later reference
             eventListView.setUserData(events);
         });
         
-        // 为列表视图添加选择监听器
+        // Add selection listener to list view
         eventListView.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() >= 0 && eventListView.getUserData() != null) {
-                @SuppressWarnings("unchecked") // 抑制类型转换警告
+                @SuppressWarnings("unchecked") // Suppress type conversion warning
                 List<Event> events = (List<Event>) eventListView.getUserData();
                 if (newVal.intValue() < events.size()) {
-                    selectedEvent[0] = events.get(newVal.intValue()); // 更新选中的事件
-                    selectedEventLabel.setText("Selected: " + selectedEvent[0].getTitle()); // 更新显示标签
+                    selectedEvent[0] = events.get(newVal.intValue()); // Update selected event
+                    selectedEventLabel.setText("Selected: " + selectedEvent[0].getTitle()); // Update display label
                 }
             } else {
                 selectedEvent[0] = null;
@@ -171,7 +171,7 @@ public class CalendarView extends VBox {
             }
         });
         
-        // 为列表视图添加选择监听器
+        // Add selection listener to list view
         eventListView.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() >= 0 && eventListView.getUserData() != null) {
                 @SuppressWarnings("unchecked")
@@ -186,89 +186,89 @@ public class CalendarView extends VBox {
             }
         });
 
-        // 添加事件按钮
+        // Add event button
         Button addEventBtn = new Button("Add Event");
         addEventBtn.setOnAction(e -> {
-            // 将选中的日期传递给事件表单视图
+            // Pass the selected date to the event form view
             LocalDate selectedDate = datePicker.getValue();
-            navController.pushPane(new EventFormView(currentUser, dataStore, navController, selectedDate)); // 导航到事件表单页面
+            navController.pushPane(new EventFormView(currentUser, dataStore, navController, selectedDate)); // Navigate to event form page
         });
         
-        // 取消事件按钮
+        // Cancel event button
         Button cancelEventBtn = new Button("Cancel Event");
-        cancelEventBtn.setStyle("-fx-base: #ff9999;"); // 设置浅红色背景
+        cancelEventBtn.setStyle("-fx-base: #ff9999;"); // Set light red background
         
-        // 设置取消事件按钮的点击事件处理
+        // Set click event handler for cancel event button
         cancelEventBtn.setOnAction(e -> {
             if (selectedEvent[0] == null) {
-                showAlert("Error", "Please Choose an Event first!"); // 如果未选择事件，显示错误提示
+                showAlert("Error", "Please Choose an Event first!"); // If no event selected, show error prompt
                 return;
             }
             
-            // 确认删除
+            // Confirm deletion
             boolean confirmDelete = showConfirmation("Cancel Event", 
                 "Are you sure you want to cancel the event: " + selectedEvent[0].getTitle() + "?");
                 
             if (confirmDelete) {
-                // 移除事件
+                // Remove event
                 dataStore.removeEvent(currentUser.getUserId(), selectedEvent[0].getEventId());
                 
-                // 刷新视图
-                showEventsBtn.fire(); // 触发显示事件按钮的点击事件
+                // Refresh view
+                showEventsBtn.fire(); // Trigger click event of show events button
                 
-                // 显示成功信息
+                // Show success message
                 showAlert("Success", "Event successfully cancelled!");
             }
         });
         
         Button addFriendBtn = new Button("Add Friend");
-        addFriendBtn.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;"); // 绿色背景，白色文字
+        addFriendBtn.setStyle("-fx-background-color: #5cb85c; -fx-text-fill: white;"); // Green background, white text
         addFriendBtn.setOnAction(e -> {
-            // 创建对话框来获取用户名
+            // Create dialog to get username
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Add Friend");
             dialog.setHeaderText("Search for a user to add as friend");
             dialog.setContentText("Enter username:");
             
-            // 等待用户输入
+            // Wait for user input
             Optional<String> result = dialog.showAndWait();
             
-            // 处理结果
+            // Process result
             if (result.isPresent() && !result.get().trim().isEmpty()) {
                 String username = result.get().trim();
                 
-                // 使用UserController查找用户
+                // Use UserController to find user
                 User foundUser = dataStore.findUserByUsername(username);
                 
                 if (foundUser != null) {
-                    // 确认是否添加为好友
+                    // Confirm whether to add as friend
                     boolean confirm = showConfirmation("Add Friend", 
                         "Do you want to add " + username + " as a friend?");
                     
                     if (confirm) {
                         try {
-                            // 添加好友关系 - void方法，没有返回值
+                            // Add friend relationship - void method, no return value
                             dataStore.addFriendRelation(
                                 currentUser.getUserId(), 
                                 foundUser.getUserId()
                             );
                             
-                            // 如果没有异常，则添加成功
+                            // If no exception, addition successful
                             showAlert("Success", username + " has been added as your friend!");
                         } catch (Exception ex) {
-                            // 如果出现异常，可能是已经是好友或其他错误
+                            // If exception occurs, possibly already a friend or other error
                             System.out.println("Error adding friend: " + ex.getMessage());
                             showAlert("Note", "Could not add " + username + " as a friend. They may already be your friend.");
                         }
                     }
                 } else {
-                    // 用户不存在
+                    // User does not exist
                     showAlert("User Not Found", "No user found with username: " + username);
                 }
             }
         });
         
-        // 登出按钮
+        // Logout button
         Button showUserFriendBtn = new Button("Manage Friends");
         showUserFriendBtn.setOnAction(e -> {
             UserController userController = new UserController(dataStore);
@@ -277,37 +277,37 @@ public class CalendarView extends VBox {
         });
         Button logoutBtn = new Button("Logout");
         logoutBtn.setOnAction(e -> {
-            navController.popPane(); // 返回到上一个视图（登录视图）
+            navController.popPane(); // Return to previous view (login view)
         });
         
         
         
-        // 创建按钮栏
-        javafx.scene.layout.HBox buttonBar = new javafx.scene.layout.HBox(10); // 水平布局，间距为10
-        buttonBar.setAlignment(Pos.CENTER); // 居中对齐
-        buttonBar.getChildren().addAll(addEventBtn, cancelEventBtn, logoutBtn); // 添加所有按钮到布局中
+        // Create button bar
+        javafx.scene.layout.HBox buttonBar = new javafx.scene.layout.HBox(10); // Horizontal layout, spacing 10
+        buttonBar.setAlignment(Pos.CENTER); // Center alignment
+        buttonBar.getChildren().addAll(addEventBtn, cancelEventBtn, logoutBtn); // Add all buttons to layout
 
         getChildren().addAll(welcomeLabel, datePicker, showEventsBtn, eventListView,showUserFriendBtn);
-        // 样式设置
-        eventListView.setPrefHeight(300); // 设置列表视图的首选高度
-        eventListView.setStyle("-fx-pref-width: 400px; -fx-font-family: 'System'; -fx-font-size: 13px;"); // 设置列表视图样式
+        // Style settings
+        eventListView.setPrefHeight(300); // Set preferred height for list view
+        eventListView.setStyle("-fx-pref-width: 400px; -fx-font-family: 'System'; -fx-font-size: 13px;"); // Set list view style
         
-        // 设置按钮样式
-        showEventsBtn.setStyle("-fx-background-color: #4488cc; -fx-text-fill: white;"); // 蓝色背景，白色文字
+        // Set button style
+        showEventsBtn.setStyle("-fx-background-color: #4488cc; -fx-text-fill: white;"); // Blue background, white text
         
-        // 添加事件部分的标题
+        // Add title for events section
         Label eventsTitle = new Label("My Events");
-        eventsTitle.setFont(Font.font("System", FontWeight.BOLD, 16)); // 设置字体样式
+        eventsTitle.setFont(Font.font("System", FontWeight.BOLD, 16)); // Set font style
         
-        // 添加分隔线以提升视觉组织感
+        // Add separators to improve visual organization
         Separator separator1 = new Separator();
         Separator separator2 = new Separator();
         separator1.setPrefWidth(400);
         separator2.setPrefWidth(400);
 
-        // 将所有组件添加到主布局中
+        // Add all components to main layout
         getChildren().addAll(
-            new Separator(), // 分隔线
+            new Separator(), // Separator
             dateBar,
             eventsTitle,
             selectedEventLabel,

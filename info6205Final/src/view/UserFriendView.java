@@ -85,7 +85,7 @@ public class UserFriendView extends VBox {
             protected void updateItem(User user, boolean empty) {
                 super.updateItem(user, empty);
                 
-                // 确保清除旧内容
+                // Ensure old content is cleared
                 setText(null);
                 setGraphic(null);
                 
@@ -123,7 +123,7 @@ public class UserFriendView extends VBox {
             protected void updateItem(User user, boolean empty) {
                 super.updateItem(user, empty);
                 
-                // 确保清除旧内容
+                // Ensure old content is cleared
                 setText(null);
                 setGraphic(null);
                 
@@ -151,7 +151,7 @@ public class UserFriendView extends VBox {
         addFriendBtn.setOnAction(e -> {
             User selectedRec = recommendListView.getSelectionModel().getSelectedItem();
             if (selectedRec != null) {
-                // 检查是否已经是好友
+                // Check if already friends
                 List<User> existingFriends = userController.getFriendsOfUser(currentUser.getUserId());
                 boolean alreadyFriend = false;
                 
@@ -163,22 +163,22 @@ public class UserFriendView extends VBox {
                 }
                 
                 if (alreadyFriend) {
-                    // 用户已经是好友，显示错误提示
+                    // User is already a friend, display error message
                     showAlert(Alert.AlertType.ERROR, "Already Friends", 
                               selectedRec.getUsername() + " is already your friend!");
                     return;
                 }
             	
-                // 保存被选中的索引
+                // Save the selected index
                 int selectedIndex = recommendListView.getSelectionModel().getSelectedIndex();
                 
-                // 添加好友关系
+                // Add friend relation
                 userController.addFriendRelation(currentUser.getUserId(), selectedRec.getUserId());
                 
-                // 刷新列表
+                // Refresh lists
                 refreshLists();
                 
-                // 如果索引依然有效，尝试重新选择该项
+                // If the index is still valid, try to reselect that item
                 if (selectedIndex >= 0 && selectedIndex < recommendListView.getItems().size()) {
                     recommendListView.getSelectionModel().select(selectedIndex);
                 }
@@ -235,22 +235,22 @@ public class UserFriendView extends VBox {
     
     private void refreshLists() {
         if (currentUser != null) {
-            // 获取数据
+            // Get data
             List<User> friends = userController.getFriendsOfUser(currentUser.getUserId());
             List<User> recommendations = userController.recommendFriends(currentUser.getUserId());
             
-            // 清除并设置项目
+            // Clear and set items
             friendListView.getItems().clear();
             friendListView.getItems().addAll(friends);
             
             recommendListView.getItems().clear();
             recommendListView.getItems().addAll(recommendations);
             
-            // 刷新视图
+            // Refresh views
             friendListView.refresh();
             recommendListView.refresh();
             
-            // 设置空列表占位符
+            // Set empty list placeholders
             if (friends.isEmpty()) {
                 Label emptyLabel = new Label("You don't have any friends yet");
                 emptyLabel.setStyle("-fx-text-fill: #95a5a6; -fx-font-style: italic;");

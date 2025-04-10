@@ -236,9 +236,9 @@ public class DataStore {
 
     // Example usage: push an operation or page name into stack, pop to revert.
     
-    // 新增，删除事件
+    // Remove events
     public boolean removeEvent(String userId, String eventId) {
-        // 确认事件是否存在
+        // Check if events exist
         Event eventToRemove = eventMap.get(eventId);
         if (eventToRemove == null) {
             System.out.println("RemoveEvent: Event not found, eventId=" + eventId);
@@ -262,7 +262,7 @@ public class DataStore {
             return false;
         }
         
-        // 从priority queue中删除event
+        // Remove events from priority queue
         boolean removed = eventsOnDate.removeIf(event -> event.getEventId().equals(eventId));
         
         // If the priority queue is now empty, remove it from the map
@@ -275,7 +275,7 @@ public class DataStore {
             }
         }
         
-        // 从eventMap中删除
+        // Remove from eventMap
         if (removed) {
             eventMap.remove(eventId);
             System.out.println("RemoveEvent: Successfully removed eventId=" + eventId + ", title=" + eventToRemove.getTitle());
