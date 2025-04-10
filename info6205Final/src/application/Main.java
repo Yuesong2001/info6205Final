@@ -11,24 +11,24 @@ import view.LoginView;
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
-	    // 1. 先创建数据和控制器
+	    // 1. First create data and controllers
 	    DataStore dataStore = new DataStore();
 	    NavigationController navController = new NavigationController();
 	    MainController mainController = new MainController(dataStore, navController);
 
-	    // 2. 创建初始的 LoginView (它需要 mainController, navController)
+	    // 2. Create the initial LoginView (it needs mainController, navController)
 	    LoginView loginView = new LoginView(mainController, navController,dataStore);
-	    //   假设 LoginView extends VBox（或 Pane 子类）
+	    //   Assume LoginView extends VBox (or a Pane subclass)
 
-	    // 3. 用 loginView 做根节点创建 Scene
+	    // 3. Create Scene with loginView as the root node
 	    Scene scene = new Scene(loginView, 800, 600);
 
-	    // 4. 把这个 Scene 再传给 navController
+	    // 4. Pass this Scene to navController
 	    navController.setScene(scene);
         navController.pushPane(loginView);
 
 
-	    // 5. 最后把 scene 设置到 Stage 并 show
+	    // 5. Finally set the scene to the Stage and show it
 	    primaryStage.setTitle("Calendar");
 	    primaryStage.setScene(scene);
 	    primaryStage.show();

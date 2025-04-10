@@ -19,7 +19,7 @@ public class EventController {
     public void createEvent(User user, String title, LocalDateTime start, LocalDateTime end,
                             String participants, PriorityLevel priority) {
         String eventId = UUID.randomUUID().toString();
-        // 简化处理参与者
+        // Simplified handling of participants
         Event newEvent = new Event(eventId, title, start, end,
                                    Arrays.asList(participants.split(",")), 
                                    priority);
@@ -27,8 +27,8 @@ public class EventController {
     }
 
     public void searchEventsByTitle(String title) {
-        // 直接调用 dataStore 的方法
-        // 后续可以更新UI, 这里仅演示
+        // Directly call dataStore method
+        // UI can be updated later, this is just for demonstration
         dataStore.searchEventsByTitle(title).forEach(System.out::println);
     }
 }

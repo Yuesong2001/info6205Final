@@ -15,7 +15,7 @@ public class NavigationController {
         this.paneStack = new Stack<>();
     }
 
-    // 把 scene 的设置改为单独的方法
+    // Changed scene setting to a separate method
     public void setScene(Scene scene) {
         this.scene = scene;
         this.currentPane = (Pane) scene.getRoot();
@@ -38,5 +38,3 @@ public class NavigationController {
         }
     }
 }
-
-

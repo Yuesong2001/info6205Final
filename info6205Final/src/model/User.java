@@ -3,7 +3,7 @@ package model;
 public class User {
     private String userId;
     private String username;
-    private String password; // 简化，实际项目需加密处理
+    private String password; // Simplify
 
     public User(String userId, String username, String password) {
         this.userId = userId;
